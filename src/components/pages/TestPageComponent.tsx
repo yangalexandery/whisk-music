@@ -7,7 +7,7 @@ export class TestPageComponent extends React.Component<ITestPageComponentProps, 
     state: ITestPageComponentState;
 
     constructor(props: ITestPageComponentProps) {
-        super();
+        super(props);
     }
 
     render() {

@@ -1,9 +1,9 @@
 "use strict";
 const gulp = require("gulp");
 // const sass = require("gulp-sass");
-// const server = require("gulp-server-livereload");
-// const watch = require("gulp-watch");
-// const browserify = require("gulp-browserify");
+const server = require("gulp-server-livereload");
+const watch = require("gulp-watch");
+const browserify = require("gulp-browserify");
 // const glob = require("multi-glob").glob;
 const path = require("path");
 // const uglify = require("gulp-uglify");
