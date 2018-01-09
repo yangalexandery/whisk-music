@@ -58,6 +58,7 @@
     "radium": "^0.21.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
+    "serve-index": "github:expressjs/serve-index",
     "tslint": "^5.8.0",
     "typings": "^2.1.1"
   }
