@@ -38,7 +38,6 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
             return false;
         }
         const isUserDown = this.state.noteState.down.filter(down => down.key === k).length === 1;
-
         return isUserDown;
     }
 
@@ -60,7 +59,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                             ]}>
                                 {
                                     NoteUIPositionList.topRow.notePositions.map((notePos, i) => {
-                                        let k = notePos.keyboardCharacter;
+                                        let k = notePos.keyboardCharacter.toLowerCase();
                                         // let note = getINoteInfoForPositionIndex(notePos.index, this.noteKeyboardManager.pitchShift, notePos.isDummy);
                                         return <Key key={i} notePosition={notePos} isSpace={false}
                                                     isDown={this.isKeyDown(k)}/>;
@@ -73,7 +72,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                             ]}>
                                 {
                                     NoteUIPositionList.middleRow.notePositions.map((notePos, i) => {
-                                        let k = notePos.keyboardCharacter;
+                                        let k = notePos.keyboardCharacter.toLowerCase();
                                         // let note = getINoteInfoForPositionIndex(notePos.index, this.noteKeyboardManager.pitchShift, notePos.isDummy);
                                         return <Key key={i} notePosition={notePos} isSpace={false}
                                                     isDown={this.isKeyDown(k)}/>;
@@ -86,7 +85,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                             ]}>
                                 {
                                     NoteUIPositionList.bottomRow.notePositions.map((notePos, i) => {
-                                        let k = notePos.keyboardCharacter;
+                                        let k = notePos.keyboardCharacter.toLowerCase();
                                         // let note = getINoteInfoForPositionIndex(notePos.index, this.noteKeyboardManager.pitchShift, notePos.isDummy);
                                         return <Key key={i} notePosition={notePos} isSpace={false}
                                                     isDown={this.isKeyDown(k)}/>;
@@ -99,7 +98,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                             ]}>
                                 {
                                     NoteUIPositionList.spaceRow.notePositions.map((notePos, i) => {
-                                        let k = notePos.keyboardCharacter;
+                                        let k = " ";
                                         // let note = getINoteInfoForPositionIndex(notePos.index, this.noteKeyboardManager.pitchShift, notePos.isDummy);
                                         return <Key key={i} notePosition={notePos} isSpace={true}
                                                     isDown={this.isKeyDown(k)}/>;
