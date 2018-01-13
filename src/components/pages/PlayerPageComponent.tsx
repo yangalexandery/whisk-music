@@ -1,7 +1,6 @@
 import * as React from "react";
 import * as Radium from "radium";
 import * as color from "color";
-import * as Soundfont from "soundfont-player"
 import {Key} from "../Key";
 import {NoteUIPositionList} from "../../models/NoteUIPositionList";
 import {ITotalNoteState, makeNewITotalNoteState, NoteKeyboardManager} from "../../NoteKeyboardManager";
@@ -13,10 +12,10 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
 
     noteKeyboardManager: NoteKeyboardManager;
     ac: AudioContext;
+    audio: AudioBuffer;
 
     constructor(props: IPlayerPageComponentProps) {
         super(props);
-
 
         this.state = {
             noteState: {
@@ -26,24 +25,19 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         };
 
         this.ac = new AudioContext();
-
+        this.audio = null;
         this.noteKeyboardManager = new NoteKeyboardManager(this);
-        
         this.noteKeyboardManager.attachListeners();
 
-        // adding these will add audio
+        // Keyboard listener to play sounds
         this.noteKeyboardManager.on(NoteKeyboardManager.KEY_START, (k: string) => {
 
-            let noteMap = {q: 'D#3', a: 'E3', w: '', s: 'F3', e: 'F#3', d: 'G3', r: 'G#3', f: 'A3', t: 'A#3', g: 'B3', y: '',
-                    h: 'C4', u: "C#4", j: 'D4', i: 'D#4', k: 'E4', o: '', l: 'F4', p: 'F#4', ';': 'G4', '[': 'G#4'};
-
-            if ((k !== "unidentified") && (k in noteMap)) {
-                Soundfont.instrument(this.ac, 'acoustic_grand_piano').then(function (piano) {
-                    piano.play(noteMap[k])
+            if (k !== "unidentified") {
+                this.loadSound("/res/Asharp3.mp3", () => {
+                    this.playSound(this.audio);
+                    console.log("Played sound with key " + k);
                 })
-            console.log("Play note " + noteMap[k]);
             }
-            
         });
 
         // this.noteKeyboardManager.on(NoteKeyboardManager.NOTE_END, (note: INoteInfo) => {
@@ -57,6 +51,34 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                 noteState: state
             });
         });
+    }
+
+
+    private loadSound(url, callback) {
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.responseType = 'arraybuffer';
+
+        var self = this;
+
+        // Decode asynchronously
+        request.onload = function() {
+            self.ac.decodeAudioData(request.response,
+                 function(buffer) {
+                     self.audio = buffer;
+                     callback();
+                 });
+            
+        }
+        request.send();
+        console.log(request.response);
+    }
+
+    private playSound(buffer) {
+        var source = this.ac.createBufferSource();
+        source.buffer = buffer;
+        source.connect(this.ac.destination);
+        source.start(0);
     }
 
     private isKeyDown(k: string): boolean {
