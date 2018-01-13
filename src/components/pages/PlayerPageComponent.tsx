@@ -26,6 +26,19 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
 
         this.noteKeyboardManager.attachListeners();
 
+        // adding these will add audio
+        // this.noteKeyboardManager.on(NoteKeyboardManager.NOTE_START, (note: INoteInfo) => {
+        //     this.audioOutputHelper.then(helper => {
+        //         this.singleNotePlayer.playNote(helper, note);
+        //     });
+        // });
+
+        // this.noteKeyboardManager.on(NoteKeyboardManager.NOTE_END, (note: INoteInfo) => {
+        //     this.audioOutputHelper.then(helper => {
+        //         this.singleNotePlayer.stopNote(helper, note);
+        //     });
+        // });
+
         this.noteKeyboardManager.on(NoteKeyboardManager.STATE_CHANGED, (state: ITotalNoteState) => {
             this.setState({
                 noteState: state

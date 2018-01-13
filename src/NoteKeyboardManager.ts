@@ -1,4 +1,3 @@
-// import {INoteInfo} from "./models/INoteInfo";
 import {EventEmitter} from "events";
 // import {ICompositionNote} from "./models/ICompositionNote";
 import {
@@ -13,7 +12,6 @@ export class NoteKeyboardManager extends EventEmitter {
     public static readonly STATE_CHANGED = "state_changed";
 
     pitchShift: number;
-    // notes: INoteInfo[];
     down: IDownNote[];
     // played: ICompositionNote[];
     playerPageComponent: PlayerPageComponent;
@@ -28,13 +26,7 @@ export class NoteKeyboardManager extends EventEmitter {
         this.playerPageComponent = playerPageComponent;
     }
 
-    // private isKeyboardEventForNote(note: INoteInfo, e: KeyboardEvent) {
-    //     let position = getUIPositionForNote(note, this.pitchShift);
-    //     return position.keyboardCharacter.toLowerCase() === e.key.toLowerCase();
-    // }
-
     addDownKey(k: string): boolean {
-        console.log(this.down);
         if (!this.down.filter(down => k === down.key)[0]) {
             this.down.push({
                 key: k,
@@ -73,18 +65,6 @@ export class NoteKeyboardManager extends EventEmitter {
                 this.emit(NoteKeyboardManager.KEY_START, k);
                 this.emitStateChanged();
             }
-            // for (let note of this.notes) {
-            //     if (this.isKeyboardEventForNote(note, e)) {
-            //         if (note.name == "Ds4") {
-            //             this.playerPageComponent.handleOpenModal();
-            //             break;
-            //         }
-            //         if (this.addDownNote(note)) {
-            //             this.emit(NoteKeyboardManager.NOTE_START, note);
-            //             this.emitStateChanged();
-            //         }
-            //     }
-            // }
         });
 
         document.addEventListener("keyup", (e: KeyboardEvent) => {
@@ -92,23 +72,8 @@ export class NoteKeyboardManager extends EventEmitter {
             this.removeDownKey(k);
             this.emit(NoteKeyboardManager.KEY_END, k);
             this.emitStateChanged();
-            // for (let note of this.notes) {
-            //     if (this.isKeyboardEventForNote(note, e)) {
-            //         if (note.name == "Ds4") {
-            //             break;
-            //         }
-            //         this.removeDownNote(note);
-            //         this.emit(NoteKeyboardManager.NOTE_END, note);
-            //         this.emitStateChanged();
-            //     }
-            // }
         });
     }
-
-    // public clearPlayedNotes(): void {
-    //     this.played = [];
-    //     this.emitStateChanged();
-    // }
 }
 
 export interface IDownNote {
