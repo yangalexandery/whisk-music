@@ -32,14 +32,36 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         // Keyboard listener to play sounds
         this.noteKeyboardManager.on(NoteKeyboardManager.KEY_START, (k: string) => {
 
-            if (k !== "unidentified") {
-                this.loadSound("/res/Asharp3.mp3", () => {
+            let noteMap = {
+                q: 'CSHARP3',
+                a: 'D3',
+                w: 'DSHARP3',
+                s: 'E3', 
+                // e: '', 
+                d: 'F3', 
+                r: 'FSHARP3', 
+                f: 'G3', 
+                t: 'GSHARP3', 
+                g: 'A3', 
+                y: 'ASHARP3', 
+                h: 'B3', 
+                // u: '',
+                j: 'C4', 
+                i: "CSHARP4", 
+                k: 'D4', 
+                o: 'DSHARP4', 
+                l: 'E4'
+            };
+
+            if ((k !== "unidentified") && (k in noteMap)) {
+                this.loadSound("/res/" + noteMap[k] + ".mp3", () => {
                     this.playSound(this.audio);
                     console.log("Played sound with key " + k);
                 })
             }
         });
 
+        
         // this.noteKeyboardManager.on(NoteKeyboardManager.NOTE_END, (note: INoteInfo) => {
         //     this.audioOutputHelper.then(helper => {
         //         this.singleNotePlayer.stopNote(helper, note);
@@ -53,7 +75,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         });
     }
 
-
+    // From https://www.html5rocks.com/en/tutorials/webaudio/intro/
     private loadSound(url, callback) {
         var request = new XMLHttpRequest();
         request.open('GET', url, true);
@@ -74,6 +96,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         console.log(request.response);
     }
 
+    // From https://www.html5rocks.com/en/tutorials/webaudio/intro/
     private playSound(buffer) {
         var source = this.ac.createBufferSource();
         source.buffer = buffer;
