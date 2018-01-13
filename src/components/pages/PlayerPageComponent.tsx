@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as Radium from "radium";
 import * as color from "color";
+import * as Soundfont from "soundfont-player"
 import {Key} from "../Key";
 import {NoteUIPositionList} from "../../models/NoteUIPositionList";
 import {ITotalNoteState, makeNewITotalNoteState, NoteKeyboardManager} from "../../NoteKeyboardManager";
@@ -11,9 +12,11 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
     state: IPlayerPageComponentState;
 
     noteKeyboardManager: NoteKeyboardManager;
+    ac: AudioContext;
 
     constructor(props: IPlayerPageComponentProps) {
         super(props);
+
 
         this.state = {
             noteState: {
@@ -22,16 +25,26 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
             }
         };
 
-        this.noteKeyboardManager = new NoteKeyboardManager(this);
+        this.ac = new AudioContext();
 
+        this.noteKeyboardManager = new NoteKeyboardManager(this);
+        
         this.noteKeyboardManager.attachListeners();
 
         // adding these will add audio
-        // this.noteKeyboardManager.on(NoteKeyboardManager.NOTE_START, (note: INoteInfo) => {
-        //     this.audioOutputHelper.then(helper => {
-        //         this.singleNotePlayer.playNote(helper, note);
-        //     });
-        // });
+        this.noteKeyboardManager.on(NoteKeyboardManager.KEY_START, (k: string) => {
+
+            let noteMap = {q: 'D#3', a: 'E3', w: '', s: 'F3', e: 'F#3', d: 'G3', r: 'G#3', f: 'A3', t: 'A#3', g: 'B3', y: '',
+                    h: 'C4', u: "C#4", j: 'D4', i: 'D#4', k: 'E4', o: '', l: 'F4', p: 'F#4', ';': 'G4', '[': 'G#4'};
+
+            if ((k !== "unidentified") && (k in noteMap)) {
+                Soundfont.instrument(this.ac, 'acoustic_grand_piano').then(function (piano) {
+                    piano.play(noteMap[k])
+                })
+            console.log("Play note " + noteMap[k]);
+            }
+            
+        });
 
         // this.noteKeyboardManager.on(NoteKeyboardManager.NOTE_END, (note: INoteInfo) => {
         //     this.audioOutputHelper.then(helper => {

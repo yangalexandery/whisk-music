@@ -46,6 +46,7 @@
     "grunt-tslint": "^5.0.1",
     "gulp-babel": "^7.0.0",
     "gulp-browserify": "^0.5.1",
+    "gulp-cli": "^2.0.0",
     "gulp-nodemon": "^2.2.1",
     "gulp-rename": "^1.2.2",
     "gulp-server-livereload": "^1.9.2",
@@ -60,6 +61,7 @@
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "serve-index": "github:expressjs/serve-index",
+    "soundfont-player": "^0.10.6",
     "tslint": "^5.8.0",
     "typings": "^2.1.1"
   }
