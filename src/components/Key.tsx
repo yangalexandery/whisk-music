@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as Radium from "radium";
-// import {INoteInfo} from "../models/INoteInfo";
 import {OpenSansFont} from "../styles/GlobalStyles";
 import {INoteUIPosition} from "../models/INoteUIPosition";
 
@@ -19,7 +18,6 @@ export class Key extends React.Component<IKeyProps, IKeyState> {
                 OpenSansFont,
                 Key.styles.base,
                 Key.styles.space(this.props.isSpace),
-                // Key.styles.flatState(this.props.notePosition.isMinor),
                 Key.styles.downState(this.props.isDown)
                 // Key.styles.dummyState(this.props.isDummy)
             ]}>
@@ -67,16 +65,6 @@ export class Key extends React.Component<IKeyProps, IKeyState> {
 
             return {};
         }
-        // flatState: (isMinor: boolean) => {
-        //     if (isMinor) {
-        //         return {
-        //             color: "white",
-        //             backgroundColor: "black"
-        //         };
-        //     }
-
-        //     return {};
-        // },
         // dummyState: (isDummy: boolean) => {
         //     if (isDummy) {
         //         return {
@@ -94,7 +82,6 @@ export class Key extends React.Component<IKeyProps, IKeyState> {
 export interface IKeyProps {
     notePosition: INoteUIPosition;
     isSpace: boolean;
-    // note: INoteInfo;
     isDown: boolean;
 }
 
