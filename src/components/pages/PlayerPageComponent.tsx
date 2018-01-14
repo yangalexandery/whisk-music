@@ -6,6 +6,7 @@ import * as Tone from "tone";
 import {Key} from "../Key";
 import {NoteMap} from "./NoteMap";
 import {OpenSansFont} from "../../styles/GlobalStyles";
+import {Screen} from "../Screen";
 import {NoteUIPositionList} from "../../models/NoteUIPositionList";
 import {ITotalNoteState, makeNewITotalNoteState, NoteKeyboardManager} from "../../NoteKeyboardManager";
 
@@ -15,6 +16,9 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
     state: IPlayerPageComponentState;
 
     noteKeyboardManager: NoteKeyboardManager;
+    drawPending: boolean;
+    rafId: any;
+    time: number;
     //ac: AudioContext;
     //audio: AudioBuffer;
     synth: Tone.Synth;
@@ -30,7 +34,8 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                 down: [],
                 // played: []
             },
-            soundOption: ''
+            soundOption: '',
+            drawPending: false
         };
 
         //this.ac = new AudioContext();
@@ -182,12 +187,23 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                 PlayerPageComponent.styles.base,
                 PlayerPageComponent.styles.flex
             ]}>
-                <div style={{width: "15%"}}>
+                <div style={{width: "15%", paddingRight: "5em"}}>
                 <div style={[OpenSansFont]}>
                     <SoundOptions />
                 </div>
                 </div>
-                <div style={{width: "70%"}}>
+                <div style={{width: "60%"}}>
+                    <div style={[
+                        PlayerPageComponent.styles.flex,
+                        PlayerPageComponent.styles.visualContainer
+                    ]}>
+                        <div style={[
+                            PlayerPageComponent.styles.flex,
+                            PlayerPageComponent.styles.screenContainer
+                        ]}>
+                            <Screen/>
+                        </div>
+                    </div>
                     <div style={[
                         PlayerPageComponent.styles.flex,
                         PlayerPageComponent.styles.keyboardContainer
@@ -322,6 +338,22 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
       </div>
     );
   }
+    raf() {
+        if (!this.drawPending) {
+            this.drawPending = true;
+            this.rafId = requestAnimationFrame(this.updateClock.bind(this));
+        }
+    }
+
+    updateClock() {
+
+    }
+
+    // updateClock() {
+    //     this.drawPending = false;
+    //     let now = getTimeStamp();
+    //     let deltaTime = now - (this.time || now);
+    // }
 
     private static readonly buttonColor = "rgb(192, 192, 192)";
     private static styles = {
@@ -384,11 +416,20 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         },
         noteContainer: {
             width: "100%",
-            padding: "10px"
+            padding: "10px 0px 10px 0px"
         },
         keyboardContainer: {
             width: "100%",
-            height: "200px"
+            height: "350px"
+        },
+        visualContainer: {
+            width: "100%",
+            height: "200px",
+        },
+        screenContainer: {
+            width: "750px",
+            height: "25px",
+            backgroundColor: "gray"
         },
         buttonContainer: {
             width: "100%"
@@ -442,4 +483,5 @@ export interface IPlayerPageComponentProps {
 export interface IPlayerPageComponentState {
     noteState: ITotalNoteState;
     soundOption: string;
+    drawPending: boolean;
 }
