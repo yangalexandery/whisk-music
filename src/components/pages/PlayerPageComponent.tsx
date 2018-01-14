@@ -1,7 +1,10 @@
 import * as React from "react";
 import * as Radium from "radium";
 import * as color from "color";
+import * as Tone from "tone";
+
 import {Key} from "../Key";
+import {NoteMap} from "./NoteMap";
 import {NoteUIPositionList} from "../../models/NoteUIPositionList";
 import {ITotalNoteState, makeNewITotalNoteState, NoteKeyboardManager} from "../../NoteKeyboardManager";
 
@@ -11,8 +14,9 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
     state: IPlayerPageComponentState;
 
     noteKeyboardManager: NoteKeyboardManager;
-    ac: AudioContext;
-    audio: AudioBuffer;
+    //ac: AudioContext;
+    //audio: AudioBuffer;
+    synth: Tone.Synth;
 
     constructor(props: IPlayerPageComponentProps) {
         super(props);
@@ -24,49 +28,38 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
             }
         };
 
-        this.ac = new AudioContext();
-        this.audio = null;
+        //this.ac = new AudioContext();
+        //this.audio = null;
+        this.synth = new Tone.PolySynth(4, Tone.Synth).toMaster();
+        
+
         this.noteKeyboardManager = new NoteKeyboardManager(this);
         this.noteKeyboardManager.attachListeners();
 
         // Keyboard listener to play sounds
         this.noteKeyboardManager.on(NoteKeyboardManager.KEY_START, (k: string) => {
-
-            let noteMap = {
-                q: 'CSHARP3',
-                a: 'D3',
-                w: 'DSHARP3',
-                s: 'E3', 
-                // e: '', 
-                d: 'F3', 
-                r: 'FSHARP3', 
-                f: 'G3', 
-                t: 'GSHARP3', 
-                g: 'A3', 
-                y: 'ASHARP3', 
-                h: 'B3', 
-                // u: '',
-                j: 'C4', 
-                i: "CSHARP4", 
-                k: 'D4', 
-                o: 'DSHARP4', 
-                l: 'E4'
-            };
-
-            if ((k !== "unidentified") && (k in noteMap)) {
-                this.loadSound("/res/" + noteMap[k] + ".mp3", () => {
+            if (k in NoteMap) {
+                this.synth.triggerAttack(NoteMap[k]);
+                /*this.loadSound("/res/" + noteMap[k] + ".mp3", () => {
                     this.playSound(this.audio);
                     console.log("Played sound with key " + k);
-                })
+                })*/
             }
         });
 
-        
-        // this.noteKeyboardManager.on(NoteKeyboardManager.NOTE_END, (note: INoteInfo) => {
+        // Keyboard listener to end sounds
+        this.noteKeyboardManager.on(NoteKeyboardManager.KEY_END, (k: string) => {
+            if (k in NoteMap) {
+                this.synth.triggerRelease(NoteMap[k]);
+                /*this.loadSound("/res/" + noteMap[k] + ".mp3", () => {
+                    this.playSound(this.audio);
+                    console.log("Played sound with key " + k);
+                })*/
+            }
         //     this.audioOutputHelper.then(helper => {
         //         this.singleNotePlayer.stopNote(helper, note);
         //     });
-        // });
+        });
 
         this.noteKeyboardManager.on(NoteKeyboardManager.STATE_CHANGED, (state: ITotalNoteState) => {
             this.setState({
@@ -75,7 +68,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         });
     }
 
-    // From https://www.html5rocks.com/en/tutorials/webaudio/intro/
+    /* From https://www.html5rocks.com/en/tutorials/webaudio/intro/
     private loadSound(url, callback) {
         var request = new XMLHttpRequest();
         request.open('GET', url, true);
@@ -94,15 +87,16 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         }
         request.send();
         console.log(request.response);
-    }
+    }*/
 
-    // From https://www.html5rocks.com/en/tutorials/webaudio/intro/
+    /* From https://www.html5rocks.com/en/tutorials/webaudio/intro/
     private playSound(buffer) {
         var source = this.ac.createBufferSource();
         source.buffer = buffer;
+        source.loop = true;
         source.connect(this.ac.destination);
         source.start(0);
-    }
+    }*/
 
     private isKeyDown(k: string): boolean {
         if (!k) {
