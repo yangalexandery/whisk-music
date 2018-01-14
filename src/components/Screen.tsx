@@ -7,23 +7,61 @@ export class Screen extends React.Component<IScreenProps, IScreenState> {
     props: IScreenProps;
     state: IScreenState;
 
+    tmp: number;
+
     canvas: HTMLCanvasElement;
+    ctx: CanvasRenderingContext2D;
 
-    componentDidMount() {
-        this.updateCanvas();
-    }
+    // componentDidMount() {
+    //     this.updateCanvas();
+    // }
 
-    componentDidUpdate() {
-        this.updateCanvas();
-    }
+    // componentDidUpdate() {
+    //     this.updateCanvas();
+    // }
 
     updateCanvas() {
-        const ctx = this.canvas.getContext("2d");
+        this.clearCanvas();
 
-        ctx.beginPath();
-        ctx.moveTo(375, 0);
-        ctx.lineTo(375, 25);
-        ctx.stroke();
+        const ctx = this.canvas.getContext("2d");
+        ctx.scale(1, 25);
+
+        // ctx.save();
+        // ctx.beginPath();
+        // ctx.strokeRect(125, 0, 1, 3);
+        for (let tick of this.state.ticks) {
+            ctx.strokeRect(tick.pos, 0, 1, 1);
+            // ctx.moveTo(tick.pos, 0);
+            // ctx.lineTo(tick.pos, 2);
+        }
+        // ctx.stroke();
+        // ctx.restore();
+    }
+
+    clearCanvas() {
+        this.canvas.width = this.canvas.width; // hacky way, but improves performance
+        // const ctx = this.canvas.getContext("2d");
+
+        // ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
+    update(deltaTime: number) {
+        let maxPos = 375;
+
+        for (let tick of this.state.ticks) {
+            if (!tick.isMiddle) {
+                tick.pos -= 1;
+            }
+            maxPos = Math.max(maxPos, tick.pos);
+        }
+
+        this.state.ticks = this.state.ticks.filter(tick => tick.pos > 0);
+
+        if (maxPos < 600) {
+            this.state.ticks.push({pos: maxPos + 150, isMiddle: false});
+        }
+
+        this.updateCanvas();
     }
 
     constructor(props: IScreenProps) {
@@ -31,23 +69,26 @@ export class Screen extends React.Component<IScreenProps, IScreenState> {
 
         this.state = {
             ticks: [
-                {pos: -300},
-                {pos: -200},
-                {pos: -100},
-                {pos: 0},
-                {pos: 100},
-                {pos: 200},
-                {pos: 300}
+                {pos:  375, isMiddle: true },
+                {pos:   75, isMiddle: false},
+                {pos:  225, isMiddle: false},
+                {pos:  375, isMiddle: false},
+                {pos:  525, isMiddle: false},
+                {pos:  675, isMiddle: false},
             ]
         };
+
+        this.tmp = 0;
     }
 
     render() {
         return (
-            <canvas id="myCanvas" width="750" height="25" ref={(canvas) => {this.canvas = canvas;}} style={[
-                // OpenSansFont,
+            <canvas id="myCanvas" width="750" height="1" 
+                ref={(canvas) => {
+                    this.canvas = canvas;
+                    // this.canvas.getContext("2d").scale(0.2, 0.2);
+                }} style={[
                 Screen.styles.base
-                // Screen.styles.dummyState(this.props.isDummy)
             ]}>
             </canvas>
                 // <div style={[
@@ -104,6 +145,7 @@ export class Screen extends React.Component<IScreenProps, IScreenState> {
 
 export interface Tick {
     pos: number;
+    isMiddle: boolean;
 }
 
 export interface IScreenProps {

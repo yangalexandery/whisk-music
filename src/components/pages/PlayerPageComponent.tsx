@@ -26,6 +26,8 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
     record: string;
     exampleRecord: string;
 
+    screen: Screen;
+
     constructor(props: IPlayerPageComponentProps) {
         super(props);
 
@@ -114,6 +116,8 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                 noteState: state
             });
         });
+
+        this.raf();
     }
 
     /* From https://www.html5rocks.com/en/tutorials/webaudio/intro/
@@ -201,7 +205,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                             PlayerPageComponent.styles.flex,
                             PlayerPageComponent.styles.screenContainer
                         ]}>
-                            <Screen/>
+                            <Screen ref={(screen) => {this.screen = screen;}}/>
                         </div>
                     </div>
                     <div style={[
@@ -337,7 +341,13 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         </div>
       </div>
     );
-  }
+    }
+
+    getTimeStamp() {
+        return performance.now(); // let's just do this for now
+        // return IS_IOS ? new Date().getTime() : performance.now();
+    }
+
     raf() {
         if (!this.drawPending) {
             this.drawPending = true;
@@ -346,14 +356,18 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
     }
 
     updateClock() {
+        this.drawPending = false;
+        var now = this.getTimeStamp();
+        var deltaTime = now - (this.time || now);
+        this.time = now;
 
+        if (this.screen) {
+            this.screen.update(deltaTime);
+        }
+        // updateMetronome(deltaTime);
+
+        this.raf();
     }
-
-    // updateClock() {
-    //     this.drawPending = false;
-    //     let now = getTimeStamp();
-    //     let deltaTime = now - (this.time || now);
-    // }
 
     private static readonly buttonColor = "rgb(192, 192, 192)";
     private static styles = {
