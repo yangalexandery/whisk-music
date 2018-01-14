@@ -8,46 +8,100 @@ export class Screen extends React.Component<IScreenProps, IScreenState> {
     state: IScreenState;
 
     canvas: HTMLCanvasElement;
+    ctx: CanvasRenderingContext2D;
 
-    componentDidMount() {
-        this.updateCanvas();
-    }
+    notePlayedThisFrame: boolean;
+    // componentDidMount() {
+    //     this.updateCanvas();
+    // }
 
-    componentDidUpdate() {
-        this.updateCanvas();
-    }
+    // componentDidUpdate() {
+    //     this.updateCanvas();
+    // }
 
     updateCanvas() {
-        const ctx = this.canvas.getContext("2d");
+        this.clearCanvas();
 
-        ctx.beginPath();
-        ctx.moveTo(375, 0);
-        ctx.lineTo(375, 25);
-        ctx.stroke();
+        const ctx = this.canvas.getContext("2d");
+        ctx.scale(1, 25);
+
+        for (let tick of this.state.playerTicks) {
+            ctx.strokeStyle = tick.color;
+            ctx.strokeRect(Math.round(tick.pos), 0, 1, 1);
+        }
+
+        for (let tick of this.state.systemTicks) {
+            ctx.strokeStyle = tick.color;
+            ctx.strokeRect(Math.round(tick.pos), 0, 1, 1);
+        }
+    }
+
+    clearCanvas() {
+        this.canvas.width = this.canvas.width; // hacky way, but improves performance
+        // const ctx = this.canvas.getContext("2d");
+
+        // ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
+    update(deltaTime: number) {
+        let maxPos = 375;
+
+        for (let tick of this.state.playerTicks) {
+            if (!tick.isMiddle) {
+                tick.pos -= Screen.PIXELS_PER_SECOND * deltaTime / 1000.0;
+            }
+        }
+
+        for (let tick of this.state.systemTicks) {
+            if (!tick.isMiddle) {
+                tick.pos -= Screen.PIXELS_PER_SECOND * deltaTime / 1000.0;
+            }
+            maxPos = Math.max(maxPos, tick.pos);
+        }
+
+        this.state.systemTicks = this.state.systemTicks.filter(tick => tick.pos > 0);
+        this.state.playerTicks = this.state.playerTicks.filter(tick => tick.pos > 0);
+
+        if (maxPos < 600) {
+            this.state.systemTicks.push({pos: maxPos + 150, isMiddle: false, color: "black"});
+        }
+
+        this.notePlayedThisFrame = false;
+
+        this.updateCanvas();
+    }
+
+    addPlayerTick() {
+        if (!this.notePlayedThisFrame) {
+            this.notePlayedThisFrame = true;
+            this.state.playerTicks.push({pos: 375, isMiddle: false, color: "red"});
+        }
     }
 
     constructor(props: IScreenProps) {
         super(props);
 
         this.state = {
-            ticks: [
-                {pos: -300},
-                {pos: -200},
-                {pos: -100},
-                {pos: 0},
-                {pos: 100},
-                {pos: 200},
-                {pos: 300}
-            ]
+            systemTicks: [
+                {pos:  375, isMiddle: true , color: "black"},
+                {pos:   75, isMiddle: false, color: "black"},
+                {pos:  225, isMiddle: false, color: "black"},
+                {pos:  375, isMiddle: false, color: "black"},
+                {pos:  525, isMiddle: false, color: "black"},
+                {pos:  675, isMiddle: false, color: "black"},
+            ],
+            playerTicks: []
         };
     }
 
     render() {
         return (
-            <canvas id="myCanvas" width="750" height="25" ref={(canvas) => {this.canvas = canvas;}} style={[
-                // OpenSansFont,
+            <canvas id="myCanvas" width="750" height="1" 
+                ref={(canvas) => {
+                    this.canvas = canvas;
+                    // this.canvas.getContext("2d").scale(0.2, 0.2);
+                }} style={[
                 Screen.styles.base
-                // Screen.styles.dummyState(this.props.isDummy)
             ]}>
             </canvas>
                 // <div style={[
@@ -55,7 +109,7 @@ export class Screen extends React.Component<IScreenProps, IScreenState> {
                 //     Screen.styles.midMarker
                 // ]}></div>
                 // {
-                //     this.state.ticks.map((tickInfo, i) => {
+                //     this.state.systemTicks.map((tickInfo, i) => {
                 //         return <div style={[
                 //             Screen.styles.marker,
                 //             {left: `${tickInfo.pos - i + 1}px`}
@@ -67,6 +121,8 @@ export class Screen extends React.Component<IScreenProps, IScreenState> {
 
     private static readonly WIDTH = 750;
     private static readonly HEIGHT = 25;
+
+    private static readonly PIXELS_PER_SECOND = 60;
 
     private static styles = {
         base: {
@@ -104,6 +160,8 @@ export class Screen extends React.Component<IScreenProps, IScreenState> {
 
 export interface Tick {
     pos: number;
+    isMiddle: boolean;
+    color: string;
 }
 
 export interface IScreenProps {
@@ -111,5 +169,6 @@ export interface IScreenProps {
 }
 
 export interface IScreenState {
-    ticks: Tick[];
+    systemTicks: Tick[];
+    playerTicks: Tick[];
 }
