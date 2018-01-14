@@ -17,6 +17,9 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
     //ac: AudioContext;
     //audio: AudioBuffer;
     synth: Tone.Synth;
+    recording: number;
+    record: string;
+    exampleRecord: string;
 
     constructor(props: IPlayerPageComponentProps) {
         super(props);
@@ -31,19 +34,52 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         //this.ac = new AudioContext();
         //this.audio = null;
         this.synth = new Tone.PolySynth(4, Tone.Synth).toMaster();
+        this.recording = 0;
+        this.record = '';
+        this.exampleRecord = "Play j D4 444;Release j D4 651;Play k E4 997;Release k E4 1238;Play a E3 1603;Release a E3 1845;Play l F4 2186;Release l F4 2416;Play s F3 2884;Release s F3 3128;";
         
 
         this.noteKeyboardManager = new NoteKeyboardManager(this);
         this.noteKeyboardManager.attachListeners();
 
+        // Play the example record
+        //this.playRecord(this.exampleRecord);
+
         // Keyboard listener to play sounds
         this.noteKeyboardManager.on(NoteKeyboardManager.KEY_START, (k: string) => {
             if (k in NoteMap) {
                 this.synth.triggerAttack(NoteMap[k]);
+                if (this.recording) {
+                    this.record = this.record + 'Play ' + k + ' ' + NoteMap[k] + ' ' + (new Date().getTime() - this.recording) + ';';
+                    console.log(this.record);
+                }
+                
                 /*this.loadSound("/res/" + noteMap[k] + ".mp3", () => {
                     this.playSound(this.audio);
                     console.log("Played sound with key " + k);
                 })*/
+            }
+            if (k === ' ') {
+                if (this.recording) {
+                    console.log(this.record);
+                    console.log("Stop recording");
+                    this.recording = 0;
+                    this.record = '';
+                    // this.noteKeyboardManager.removeDownKey(' ');
+                } else {
+                    console.log("Start recording");
+                    this.recording = new Date().getTime();
+                    // this.noteKeyboardManager.addDownKey(' ');
+                }
+
+
+                
+                /*if (this.isKeyDown(' ')) {
+                    
+                } else {
+                    
+                }*/
+
             }
         });
 
@@ -51,6 +87,11 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         this.noteKeyboardManager.on(NoteKeyboardManager.KEY_END, (k: string) => {
             if (k in NoteMap) {
                 this.synth.triggerRelease(NoteMap[k]);
+
+                if (this.recording) {
+                    this.record = this.record + 'Release ' + k + ' ' + NoteMap[k] + ' ' + (new Date().getTime() - this.recording) + ';';
+                    console.log(this.record);
+                }
                 /*this.loadSound("/res/" + noteMap[k] + ".mp3", () => {
                     this.playSound(this.audio);
                     console.log("Played sound with key " + k);
@@ -97,6 +138,26 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         source.connect(this.ac.destination);
         source.start(0);
     }*/
+
+    private playRecord(record: string) {
+        var lines = record.split(';');
+        //console.log(lines);
+
+        //var time: number = new Date().getTime();
+        for (var i in lines) {
+            var tokens = lines[i].split(' ');
+            console.log(tokens);
+            console.log(tokens[1]);
+            if (tokens[0] === 'Play') {
+                console.log(tokens[1]);
+                //setInterval(this.noteKeyboardManager.addDownKey(tokens[1]), tokens[3]);
+                this.synth.triggerAttack(tokens[2], Number(tokens[3]) / 1000);
+            } else {
+                //setInterval(this.noteKeyboardManager.removeDownKey(tokens[1]), tokens[3]);
+                this.synth.triggerRelease(tokens[2], Number(tokens[3]) / 1000);
+            }
+        }
+    }
 
     private isKeyDown(k: string): boolean {
         if (!k) {
