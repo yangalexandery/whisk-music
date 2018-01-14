@@ -5,6 +5,7 @@ import * as Tone from "tone";
 
 import {Key} from "../Key";
 import {NoteMap} from "./NoteMap";
+import {OpenSansFont} from "../../styles/GlobalStyles";
 import {NoteUIPositionList} from "../../models/NoteUIPositionList";
 import {ITotalNoteState, makeNewITotalNoteState, NoteKeyboardManager} from "../../NoteKeyboardManager";
 
@@ -26,9 +27,10 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
 
         this.state = {
             noteState: {
-                down: []
+                down: [],
                 // played: []
-            }
+            },
+            soundOption: ''
         };
 
         //this.ac = new AudioContext();
@@ -167,13 +169,25 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         return isUserDown;
     }
 
+    private _create() {
+        alert("Moo!");
+    }
+
     render() {
+        var SoundOptions = this.SoundOptions.bind(this)
         return (
+
             <div style={[
+                
                 PlayerPageComponent.styles.base,
                 PlayerPageComponent.styles.flex
             ]}>
-                <div style={{width: "100%"}}>
+                <div style={{width: "15%"}}>
+                <div style={[OpenSansFont]}>
+                    <SoundOptions />
+                </div>
+                </div>
+                <div style={{width: "70%"}}>
                     <div style={[
                         PlayerPageComponent.styles.flex,
                         PlayerPageComponent.styles.keyboardContainer
@@ -237,6 +251,77 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
             </div>
         );
     }
+
+    private handleOptionChange(changeEvent) {
+        this.setState({
+              soundOption: changeEvent.target.value
+        });
+    }
+
+    private handleFormSubmit(formSubmitEvent) {
+        formSubmitEvent.preventDefault();
+        console.log(this.state.soundOption);
+        switch (this.state.soundOption) {
+            
+            case 'Synth':
+                this.synth = new Tone.PolySynth(4, Tone.Synth).toMaster();
+                break;
+            case 'MonoSynth':
+                this.synth = new Tone.PolySynth(4, Tone.MonoSynth).toMaster();
+                break;
+            case 'PluckSynth':
+                this.synth = new Tone.PolySynth(4, Tone.PluckSynth).toMaster();
+                break;
+            case 'MembraneSynth':
+                this.synth = new Tone.PolySynth(4, Tone.MembraneSynth).toMaster();
+                break;
+            default:
+                console.log("Default option");
+        }
+        
+        //console.log('You have selected:' + this.state.soundOption);
+    }
+
+    SoundOptions() {
+    return (
+      <div className="container">
+        <div className="row">
+          <div className="col-sm-12">
+
+            <form onSubmit={this.handleFormSubmit.bind(this)}>
+            <div className="radio">
+                <label>
+                  <input type="radio" value="Synth" checked={this.state.soundOption === 'Synth'} onChange={this.handleOptionChange.bind(this)} />
+                  Synth
+                </label>
+              </div>
+              <div className="radio">
+                <label>
+                  <input type="radio" value="MonoSynth" checked={this.state.soundOption === 'MonoSynth'} onChange={this.handleOptionChange.bind(this)} />
+                  Mono Synth
+                </label>
+              </div>
+              <div className="radio">
+                <label>
+                  <input type="radio" value="PluckSynth" checked={this.state.soundOption === 'PluckSynth'} onChange={this.handleOptionChange.bind(this)}/>
+                  Pluck Synth
+                </label>
+              </div>
+              <div className="radio">
+                <label>
+                  <input type="radio" value="MembraneSynth" checked={this.state.soundOption === 'MembraneSynth'} onChange={this.handleOptionChange.bind(this)}/>
+                  Membrane Synth
+                </label>
+              </div>
+              <br />
+              <button className="btn btn-default" type="submit">Change Synth</button>
+            </form>
+
+          </div>
+        </div>
+      </div>
+    );
+  }
 
     private static readonly buttonColor = "rgb(192, 192, 192)";
     private static styles = {
@@ -356,4 +441,5 @@ export interface IPlayerPageComponentProps {
 
 export interface IPlayerPageComponentState {
     noteState: ITotalNoteState;
+    soundOption: string;
 }
