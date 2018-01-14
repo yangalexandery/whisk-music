@@ -56,6 +56,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
 
         // Keyboard listener to play sounds
         this.noteKeyboardManager.on(NoteKeyboardManager.KEY_START, (k: string) => {
+            this.screen.addPlayerTick();
             if (k in NoteMap) {
                 this.synth.triggerAttack(NoteMap[k]);
                 if (this.recording) {
