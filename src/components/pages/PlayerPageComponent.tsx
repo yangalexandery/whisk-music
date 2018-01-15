@@ -8,9 +8,10 @@ import { Key } from "../Key";
 import { NoteMap } from "./NoteMap";
 import { Stopwatch } from "./Stopwatch";
 import { OpenSansFont } from "../../styles/GlobalStyles";
-import { Screen } from "../Screen";
+import { Screen, ScreenModel } from "../Screen";
 import { NoteUIPositionList } from "../../models/NoteUIPositionList";
 import { ITotalNoteState, makeNewITotalNoteState, NoteKeyboardManager } from "../../NoteKeyboardManager";
+import { Metronome } from "../Metronome";
 
 @Radium
 export class PlayerPageComponent extends React.Component<IPlayerPageComponentProps, IPlayerPageComponentState> {
@@ -27,7 +28,11 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
     record: string;
     exampleRecord: string;
     screen: Screen;
+    screenModel: ScreenModel;
     instr: any;
+    metronome: Metronome;
+    metronomeInstr: any;
+    framesSinceMetronomePlayed: number;
     ac: AudioContext
     keyToNotes: {[key: string]: any[]};
 
@@ -53,8 +58,10 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
 
         // Keyboard listener to play sounds
         this.noteKeyboardManager.on(NoteKeyboardManager.KEY_START, (k: string) => {
-            this.screen.addPlayerTick();
             if (k in NoteMap) {
+                this.screenModel.addPlayerTick();
+                // this.instr.play(NoteMap[k]);
+                
                 if(!this.keyToNotes[k]) {
                     this.keyToNotes[k] = [];
                 }
@@ -62,6 +69,9 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                 if (this.state.recording) {
                     this.record = this.record + 'Play ' + k + ' ' + NoteMap[k] + ' ' + (new Date().getTime() - this.state.recording) + ' ' + this.state.soundOption + ';';
                 }
+            }
+            if (k === 'm') {
+                this.metronome.mute = !this.metronome.mute;
             }
         });
 
@@ -92,11 +102,36 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         // TODO: Have multiple instruments that can be played at the same time
         this.raf();
         this.ac = new AudioContext();
+
         Soundfont.instrument(this.ac, this.state.soundOption).then(this.bindInstrument.bind(this));
+
+        this.metronome = new Metronome();
+        this.framesSinceMetronomePlayed = 0;
+        this.metronome.on(Metronome.BEAT_START, (k: string) => {
+            if (this.metronome && this.framesSinceMetronomePlayed > 10 ) {
+                console.log("good");
+                this.framesSinceMetronomePlayed = 0;
+                if (!this.metronome.mute) {
+                    this.metronomeInstr.play("D4").stop(this.ac.currentTime + 0.25);
+                }
+            }
+        });
+        Soundfont.instrument(this.ac, "taiko_drum").then(this.bindMetronome.bind(this));
+        this.screenModel = new ScreenModel(750, this.metronome);
     }
 
     private bindInstrument(instr: any) {
-        this.instr = instr
+        this.instr = instr;
+
+        Soundfont.instrument(this.ac, this.state.soundOption).then(this.bindPianoInstrument.bind(this));//function (clavinet) {
+    }
+
+    bindPianoInstrument(instr: any) {
+        this.instr = instr;
+    }
+
+    bindMetronome(instr: any) {
+        this.metronomeInstr = instr;
     }
 
     // Triggers a note
@@ -179,7 +214,11 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                             PlayerPageComponent.styles.flex,
                             PlayerPageComponent.styles.screenContainer
                         ]}>
-                            <Screen ref={(screen) => { this.screen = screen; }} />
+                            <Screen ref={(screen) => {
+                                if (screen) {
+                                    this.screenModel.setScreen(screen);
+                                }
+                            }} screenModel={this.screenModel}/>
                         </div>
                     </div>
                     <div style={[
@@ -433,10 +472,13 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         var deltaTime = now - (this.time || now);
         this.time = now;
 
-        if (this.screen) {
-            this.screen.update(deltaTime);
+        if (this.screenModel) {
+            this.screenModel.update(deltaTime);
         }
         // TODO: updateMetronome(deltaTime);
+
+        this.framesSinceMetronomePlayed++;
+        // updateMetronome(deltaTime);
 
         this.raf();
     }
