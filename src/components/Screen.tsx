@@ -52,7 +52,7 @@ export class ScreenModel {
         for (let tick of this.systemTicks) {
             if (!tick.isMiddle) {
                 tick.pos -= this.pixelsPerSecond * deltaTime / 1000.0;
-                if (this.width / 2.0 - 3 < tick.pos && tick.pos < this.width / 2.0 + 3) {
+                if (this.width / 2.0 - 6 < tick.pos && tick.pos < this.width / 2.0 + 1) {
                     console.log("testtttt");
                     this.metronome.emit(Metronome.BEAT_START, "");
                 }
@@ -103,7 +103,9 @@ export class Screen extends React.Component<IScreenProps, IScreenState> {
             if (tick.isMiddle) {
                 ctx.strokeRect(Math.round(tick.pos), 0, 1, 25);
             } else {
-                ctx.strokeRect(Math.round(tick.pos), 7, 1, 13);
+                if (!this.props.screenModel.metronome.mute) {
+                    ctx.strokeRect(Math.round(tick.pos), 7, 1, 13);
+                }
             }
         }
     }

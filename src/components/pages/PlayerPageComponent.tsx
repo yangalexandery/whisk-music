@@ -66,8 +66,8 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
 
         // Keyboard listener to play sounds
         this.noteKeyboardManager.on(NoteKeyboardManager.KEY_START, (k: string) => {
-            this.screenModel.addPlayerTick();
             if (k in NoteMap) {
+                this.screenModel.addPlayerTick();
                 // this.instr.play(NoteMap[k]);
                 if(!this.keyToNotes[k]) {
                     this.keyToNotes[k] = [];
@@ -97,6 +97,9 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                     this.recording = new Date().getTime();
                     // this.noteKeyboardManager.addDownKey(' ');
                 }
+            }
+            if (k === 'm') {
+                this.metronome.mute = !this.metronome.mute;
             }
         });
 
@@ -140,10 +143,12 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         this.metronome = new Metronome();
         this.framesSinceMetronomePlayed = 0;
         this.metronome.on(Metronome.BEAT_START, (k: string) => {
-            if (this.metronome && this.framesSinceMetronomePlayed > 10) {
+            if (this.metronome && this.framesSinceMetronomePlayed > 10 ) {
                 console.log("good");
                 this.framesSinceMetronomePlayed = 0;
-                this.metronomeInstr.play("D4").stop(this.ac.currentTime + 0.25);
+                if (!this.metronome.mute) {
+                    this.metronomeInstr.play("D4").stop(this.ac.currentTime + 0.25);
+                }
             }
         });
 
