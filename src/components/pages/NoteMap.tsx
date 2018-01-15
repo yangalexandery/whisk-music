@@ -1,3 +1,5 @@
+export const DEFAULT_SOUND_OPTION = 'Synth';
+
 export const NoteMap = {
 	q: 'B3',
 	a: 'C4',
