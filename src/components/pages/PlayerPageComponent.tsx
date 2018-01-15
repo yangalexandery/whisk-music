@@ -8,9 +8,10 @@ import { Key } from "../Key";
 import { NoteMap } from "./NoteMap";
 import { Stopwatch } from "./Stopwatch";
 import { OpenSansFont } from "../../styles/GlobalStyles";
-import { Screen } from "../Screen";
+import { Screen, ScreenModel } from "../Screen";
 import { NoteUIPositionList } from "../../models/NoteUIPositionList";
 import { ITotalNoteState, makeNewITotalNoteState, NoteKeyboardManager } from "../../NoteKeyboardManager";
+import { Metronome } from "../Metronome";
 
 @Radium
 export class PlayerPageComponent extends React.Component<IPlayerPageComponentProps, IPlayerPageComponentState> {
@@ -28,7 +29,11 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
     exampleRecord: string;
 
     screen: Screen;
+    screenModel: ScreenModel;
     instr: any;
+    metronome: Metronome;
+    metronomeInstr: any;
+    framesSinceMetronomePlayed: number;
     ac: AudioContext
     keyToNotes: {[key: string]: any[]};
 
@@ -61,7 +66,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
 
         // Keyboard listener to play sounds
         this.noteKeyboardManager.on(NoteKeyboardManager.KEY_START, (k: string) => {
-            this.screen.addPlayerTick();
+            this.screenModel.addPlayerTick();
             if (k in NoteMap) {
                 // this.instr.play(NoteMap[k]);
                 if(!this.keyToNotes[k]) {
@@ -131,15 +136,32 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         this.raf();
 
         this.ac = new AudioContext();
+
+        this.metronome = new Metronome();
+        this.framesSinceMetronomePlayed = 0;
+        this.metronome.on(Metronome.BEAT_START, (k: string) => {
+            if (this.metronome && this.framesSinceMetronomePlayed > 10) {
+                console.log("good");
+                this.framesSinceMetronomePlayed = 0;
+                this.metronomeInstr.play("D4").stop(this.ac.currentTime + 0.25);
+            }
+        });
+
         Soundfont.instrument(this.ac, this.state.pianoInstrument).then(this.bindPianoInstrument.bind(this));//function (clavinet) {
+        Soundfont.instrument(this.ac, "taiko_drum").then(this.bindMetronome.bind(this));
             // clavinet.play('C4');
             // this.time = 0.0;
             // this.instr = clavinet;
         // });
+        this.screenModel = new ScreenModel(750, this.metronome);
     }
 
     bindPianoInstrument(instr: any) {
-        this.instr = instr
+        this.instr = instr;
+    }
+
+    bindMetronome(instr: any) {
+        this.metronomeInstr = instr;
     }
 
     /* From https://www.html5rocks.com/en/tutorials/webaudio/intro/
@@ -231,7 +253,11 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                             PlayerPageComponent.styles.flex,
                             PlayerPageComponent.styles.screenContainer
                         ]}>
-                            <Screen ref={(screen) => { this.screen = screen; }} />
+                            <Screen ref={(screen) => {
+                                if (screen) {
+                                    this.screenModel.setScreen(screen);
+                                }
+                            }} screenModel={this.screenModel}/>
                         </div>
                     </div>
                     <div style={[
@@ -436,9 +462,10 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         var deltaTime = now - (this.time || now);
         this.time = now;
 
-        if (this.screen) {
-            this.screen.update(deltaTime);
+        if (this.screenModel) {
+            this.screenModel.update(deltaTime);
         }
+        this.framesSinceMetronomePlayed++;
         // updateMetronome(deltaTime);
 
         this.raf();
