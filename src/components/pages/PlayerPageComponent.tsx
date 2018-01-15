@@ -2,6 +2,7 @@ import * as React from "react";
 import * as Radium from "radium";
 import * as color from "color";
 import * as Tone from "tone";
+import * as Soundfont from "soundfont-player";
 
 import {Key} from "../Key";
 import {NoteMap} from "./NoteMap";
@@ -22,11 +23,14 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
     //ac: AudioContext;
     //audio: AudioBuffer;
     synth: Tone.Synth;
-    // recording: number;
+    recording: number;
     record: string;
-    // exampleRecord: string;
+    exampleRecord: string;
 
     screen: Screen;
+    instr: any;
+    ac: AudioContext
+    keyToNotes: {[key: string]: any[]};
 
     constructor(props: IPlayerPageComponentProps) {
         super(props);
@@ -38,16 +42,16 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
             },
             soundOption: '',
             drawPending: false,
-            recording: 0
+            pianoInstrument: "acoustic_grand_piano"
         };
 
         //this.ac = new AudioContext();
         //this.audio = null;
         this.synth = new Tone.PolySynth(4, Tone.Synth).toMaster();
-        //this.recording = 0;
+        this.recording = 0;
         this.record = '';
-        //this.exampleRecord = "Play j D4 444;Release j D4 651;Play k E4 997;Release k E4 1238;Play a E3 1603;Release a E3 1845;Play l F4 2186;Release l F4 2416;Play s F3 2884;Release s F3 3128;";
-        
+        this.exampleRecord = "Play j D4 444;Release j D4 651;Play k E4 997;Release k E4 1238;Play a E3 1603;Release a E3 1845;Play l F4 2186;Release l F4 2416;Play s F3 2884;Release s F3 3128;";
+        this.keyToNotes = {};
 
         this.noteKeyboardManager = new NoteKeyboardManager(this);
         this.noteKeyboardManager.attachListeners();
@@ -59,10 +63,15 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         this.noteKeyboardManager.on(NoteKeyboardManager.KEY_START, (k: string) => {
             this.screen.addPlayerTick();
             if (k in NoteMap) {
-                this.synth.triggerAttack(NoteMap[k]);
-                if (this.state.recording) {
-                    this.record = this.record + 'Play ' + k + ' ' + NoteMap[k] + ' ' + (new Date().getTime() - this.state.recording) + ';';
-                    //console.log(this.record);
+                // this.instr.play(NoteMap[k]);
+                if(!this.keyToNotes[k]) {
+                    this.keyToNotes[k] = [];
+                }
+                this.keyToNotes[k].push(this.instr.play(NoteMap[k]));
+                // this.synth.triggerAttack(NoteMap[k]);
+                if (this.recording) {
+                    this.record = this.record + 'Play ' + k + ' ' + NoteMap[k] + ' ' + (new Date().getTime() - this.recording) + ';';
+                    console.log(this.record);
                 }
                 
                 /*this.loadSound("/res/" + noteMap[k] + ".mp3", () => {
@@ -70,16 +79,46 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                     console.log("Played sound with key " + k);
                 })*/
             }
+            if (k === ' ') {
+                if (this.recording) {
+                    console.log(this.record);
+                    console.log("Stop recording");
+                    this.recording = 0;
+                    this.record = '';
+                    // this.noteKeyboardManager.removeDownKey(' ');
+                } else {
+                    console.log("Start recording");
+                    this.recording = new Date().getTime();
+                    // this.noteKeyboardManager.addDownKey(' ');
+                }
+
+
+                
+                /*if (this.isKeyDown(' ')) {
+                    
+                } else {
+                    
+                }*/
+
+            }
         });
 
         // Keyboard listener to end sounds
         this.noteKeyboardManager.on(NoteKeyboardManager.KEY_END, (k: string) => {
             if (k in NoteMap) {
-                this.synth.triggerRelease(NoteMap[k]);
+                if (!this.keyToNotes[k]) {
+                    this.keyToNotes[k] = [];
+                }
 
-                if (this.state.recording) {
-                    this.record = this.record + 'Release ' + k + ' ' + NoteMap[k] + ' ' + (new Date().getTime() - this.state.recording) + ';';
-                    //console.log(this.record);
+                this.keyToNotes[k].map((note, i) => {
+                    note.stop();
+                });
+                this.keyToNotes[k] = [];
+                // this.synth.triggerRelease(NoteMap[k]);
+
+                if (this.recording) {
+                    this.record = this.record + 'Release ' + k + ' ' + NoteMap[k] + ' ' + (new Date().getTime() - this.recording) + ';';
+                    console.log(this.record);
                 }
                 /*this.loadSound("/res/" + noteMap[k] + ".mp3", () => {
                     this.playSound(this.audio);
@@ -98,6 +137,17 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         });
 
         this.raf();
+
+        this.ac = new AudioContext();
+        Soundfont.instrument(this.ac, this.state.pianoInstrument).then(this.bindPianoInstrument.bind(this));//function (clavinet) {
+            // clavinet.play('C4');
+            // this.time = 0.0;
+            // this.instr = clavinet;
+        // });
+    }
+
+    bindPianoInstrument(instr: any) {
+        this.instr = instr
     }
 
     /* From https://www.html5rocks.com/en/tutorials/webaudio/intro/
@@ -163,8 +213,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
     }
 
     render() {
-        var SoundOptions = this.SoundOptions.bind(this);
-        var RecordButton = this.RecordButton.bind(this);
+        var SoundOptions = this.SoundOptions.bind(this)
         return (
 
             <div style={[
@@ -175,7 +224,6 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                 <div style={{width: "15%", paddingRight: "5em"}}>
                 <div style={[OpenSansFont]}>
                     <SoundOptions />
-                    <RecordButton />
                 </div>
                 </div>
                 <div style={{width: "60%"}}>
@@ -262,7 +310,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
 
     private handleFormSubmit(formSubmitEvent) {
         formSubmitEvent.preventDefault();
-        //console.log(this.state.soundOption);
+        console.log(this.state.soundOption);
         switch (this.state.soundOption) {
             
             case 'Synth':
@@ -284,8 +332,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         //console.log('You have selected:' + this.state.soundOption);
     }
 
-    // Radio buttons to toggle sound types
-    private SoundOptions() {
+    SoundOptions() {
     return (
       <div className="container">
         <div className="row">
@@ -324,43 +371,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         </div>
       </div>
     );
-  }
-
-
-    private handleRecording() {
-        if (this.state.recording) {
-            // Download the recording
-            var element = document.createElement("a");
-            var file = new Blob([this.record], {type: 'text/plain'});
-            element.href = URL.createObjectURL(file);
-            element.download = "recording.txt";
-            element.click();
-
-            // console.log(this.record);
-            // console.log("Stop recording");
-            this.setState({recording: 0});
-            this.record = '';
-            // this.noteKeyboardManager.removeDownKey(' ');
-        } else {
-            // console.log("Start recording");
-            this.setState({recording: new Date().getTime()});
-            // this.noteKeyboardManager.addDownKey(' ');
-        }
     }
-
-    // Button to record compositions
-    private RecordButton() {
-        return (
-            <div>
-                <br />
-                <br />
-                <button onClick={() => this.handleRecording()}>{this.state.recording ? 'Stop Recording Keys' : 'Record Keys'}</button>
-            </div>
-
-
-        );
-    }
-
 
     getTimeStamp() {
         return performance.now(); // let's just do this for now
@@ -517,5 +528,5 @@ export interface IPlayerPageComponentState {
     noteState: ITotalNoteState;
     soundOption: string;
     drawPending: boolean;
-    recording: number;
+    pianoInstrument: string;
 }
