@@ -7,6 +7,7 @@ import * as Soundfont from "soundfont-player";
 import { Key } from "../Key";
 import { NoteMap } from "./NoteMap";
 import { Stopwatch } from "./Stopwatch";
+import { FileSelector } from "./FileInput";
 import { OpenSansFont } from "../../styles/GlobalStyles";
 import { Screen } from "../Screen";
 import { NoteUIPositionList } from "../../models/NoteUIPositionList";
@@ -40,10 +41,9 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                 down: [],
                 // played: []
             },
-            soundOption: 'Synth',
+            soundOption: 'acoustic_grand_piano',
             recording: 0,
             drawPending: false,
-            pianoInstrument: "acoustic_grand_piano"
         };
 
         //this.ac = new AudioContext();
@@ -131,14 +131,16 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         this.raf();
 
         this.ac = new AudioContext();
-        Soundfont.instrument(this.ac, this.state.pianoInstrument).then(this.bindPianoInstrument.bind(this));//function (clavinet) {
+        Soundfont.instrument(this.ac, this.state.soundOption).then(this.bindInstrument.bind(this));
+
+        //function (clavinet) {
             // clavinet.play('C4');
             // this.time = 0.0;
             // this.instr = clavinet;
         // });
     }
 
-    bindPianoInstrument(instr: any) {
+    private bindInstrument(instr: any) {
         this.instr = instr
     }
 
@@ -218,8 +220,14 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                 <div style={{ width: "15%", paddingRight: "5em" }}>
                     <div style={[OpenSansFont]}>
                         <Stopwatch />
+                        <br/>
                         <SoundOptions />
-                        <RecordButton />
+                        <br/> <br/>
+                        <h1 style={{fontSize: '1.2em'}}>Play or Load Recording</h1>
+                        <br/>
+                        <RecordButton /> 
+                        <br/>
+                        <FileSelector />
                     </div>
                 </div>
                 <div style={{ width: "60%" }}>
@@ -300,28 +308,12 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
 
     private changeSoundOption(option: string) {
         this.setState({ soundOption: option });
-        this.updateSynth();
+        this.updateInstrument();
     }
 
 
-    private updateSynth() {
-        switch (this.state.soundOption) {
-
-            case 'Synth':
-                this.synth = new Tone.PolySynth(4, Tone.Synth).toMaster();
-                break;
-            case 'MonoSynth':
-                this.synth = new Tone.PolySynth(4, Tone.MonoSynth).toMaster();
-                break;
-            case 'PluckSynth':
-                this.synth = new Tone.PolySynth(4, Tone.PluckSynth).toMaster();
-                break;
-            case 'MembraneSynth':
-                this.synth = new Tone.PolySynth(4, Tone.MembraneSynth).toMaster();
-                break;
-            default:
-                console.log("Default option");
-        }
+    private updateInstrument() {
+        Soundfont.instrument(this.ac, this.state.soundOption).then(this.bindInstrument.bind(this));
     }
 
     private handleOptionChange(changeEvent) {
@@ -333,7 +325,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
     private handleFormSubmit(formSubmitEvent) {
         formSubmitEvent.preventDefault();
         //console.log(this.state.soundOption);
-        this.updateSynth();
+        this.updateInstrument();
 
         //console.log('You have selected:' + this.state.soundOption);
     }
@@ -344,36 +336,89 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
             <div className="container">
                 <div className="row">
                     <div className="col-sm-12">
-                        <br/>
+
+                        <h1 style={{fontSize: '1.2em'}}>Change Instrument</h1>
                         <br/>
                         <form onSubmit={this.handleFormSubmit.bind(this)}>
                             <div className="radio">
                                 <label>
-                                    <input type="radio" value="Synth" checked={this.state.soundOption === 'Synth'} onChange={this.handleOptionChange.bind(this)} />
-                                    Synth
+                                    <input type="radio" value="acoustic_grand_piano" checked={this.state.soundOption === 'acoustic_grand_piano'} onChange={this.handleOptionChange.bind(this)} />
+                                    Piano
 
-                </label>
+                                </label>
                             </div>
+
                             <div className="radio">
                                 <label>
-                                    <input type="radio" value="MonoSynth" checked={this.state.soundOption === 'MonoSynth'} onChange={this.handleOptionChange.bind(this)} />
-                                    Mono Synth
-                </label>
+                                    <input type="radio" value="clavinet" checked={this.state.soundOption === 'clavinet'} onChange={this.handleOptionChange.bind(this)} />
+                                    Clavinet
+                                </label>
                             </div>
+
                             <div className="radio">
                                 <label>
-                                    <input type="radio" value="PluckSynth" checked={this.state.soundOption === 'PluckSynth'} onChange={this.handleOptionChange.bind(this)} />
-                                    Pluck Synth
-                </label>
+                                    <input type="radio" value="marimba" checked={this.state.soundOption === 'marimba'} onChange={this.handleOptionChange.bind(this)} />
+                                    Marimba
+                                </label>
                             </div>
+
                             <div className="radio">
                                 <label>
-                                    <input type="radio" value="MembraneSynth" checked={this.state.soundOption === 'MembraneSynth'} onChange={this.handleOptionChange.bind(this)} />
-                                    Membrane Synth
-                </label>
+                                    <input type="radio" value="alto_sax" checked={this.state.soundOption === 'alto_sax'} onChange={this.handleOptionChange.bind(this)} />
+                                    Alto Sax
+                                </label>
+                            </div>
+
+                            <div className="radio">
+                                <label>
+                                    <input type="radio" value="bassoon" checked={this.state.soundOption === 'bassoon'} onChange={this.handleOptionChange.bind(this)} />
+                                    Bassoon
+                                </label>
+                            </div>
+
+                            <div className="radio">
+                                <label>
+                                    <input type="radio" value="clarinet" checked={this.state.soundOption === 'clarinet'} onChange={this.handleOptionChange.bind(this)} />
+                                    Clarinet
+                                </label>
+                            </div>
+
+                            <div className="radio">
+                                <label>
+                                    <input type="radio" value="flute" checked={this.state.soundOption === 'flute'} onChange={this.handleOptionChange.bind(this)} />
+                                    Flute
+                                </label>
+                            </div>
+
+                            <div className="radio">
+                                <label>
+                                    <input type="radio" value="cello" checked={this.state.soundOption === 'cello'} onChange={this.handleOptionChange.bind(this)} />
+                                    Cello
+                                </label>
+                            </div>
+
+                            <div className="radio">
+                                <label>
+                                    <input type="radio" value="violin" checked={this.state.soundOption === 'violin'} onChange={this.handleOptionChange.bind(this)} />
+                                    Violin
+                                </label>
+                            </div>
+
+                            <div className="radio">
+                                <label>
+                                    <input type="radio" value="steel_drums" checked={this.state.soundOption === 'steel_drums'} onChange={this.handleOptionChange.bind(this)} />
+                                    Steel Drums
+                                </label>
+                            </div>
+
+                            <div className="radio">
+                                <label>
+                                    <input type="radio" value="woodblock" checked={this.state.soundOption === 'woodblock'} onChange={this.handleOptionChange.bind(this)} />
+                                    Woodblock
+                                </label>
                             </div>
                             <br />
-                            <button className="btn btn-default" type="submit">Change Synth</button>
+                            <button className="btn btn-default" type="submit">Change Instrument</button>
                         </form>
 
                     </div>
@@ -408,9 +453,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
     private RecordButton() {
         return (
             <div>
-                <br />
-                <br />
-                <button onClick={() => this.handleRecording()}>{this.state.recording ? 'Stop Recording Keys' : 'Record Keys'}</button>
+                <button onClick={() => this.handleRecording()}>{this.state.recording ? 'Stop Recording' : 'Start Recording'}</button>
             </div>
 
 
@@ -574,5 +617,4 @@ export interface IPlayerPageComponentState {
     soundOption: string;
     recording: number;
     drawPending: boolean;
-    pianoInstrument: string;
 }
