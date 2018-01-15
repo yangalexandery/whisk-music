@@ -56,7 +56,7 @@ function makeBottomRow(): INoteUIRow {
 			makeINoteUIPosition("V", 86),
 			makeINoteUIPosition("B", 66),
 			makeINoteUIPosition("N", 78),
-			makeINoteUIPosition("M", 77),
+			makeINoteUIPosition("M", 77, "#888"),
 			makeINoteUIPosition(",", 44),
 			makeINoteUIPosition(".", 46)
 		]
