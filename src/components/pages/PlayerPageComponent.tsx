@@ -21,7 +21,6 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
     drawPending: boolean;
     rafId: any;
     time: number;
-    //ac: AudioContext;
     //audio: AudioBuffer;
     synth: Tone.Synth;
     recording: number;
@@ -49,10 +48,10 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
 
         //this.ac = new AudioContext();
         //this.audio = null;
-        this.synth = new Tone.PolySynth(4, Tone.Synth).toMaster();
+        //this.synth = new Tone.PolySynth(4, Tone.Synth).toMaster();
         this.recording = 0;
         this.record = '';
-        this.exampleRecord = "Play j D4 444;Release j D4 651;Play k E4 997;Release k E4 1238;Play a E3 1603;Release a E3 1845;Play l F4 2186;Release l F4 2416;Play s F3 2884;Release s F3 3128;";
+        //this.exampleRecord = "Play j D4 444;Release j D4 651;Play k E4 997;Release k E4 1238;Play a E3 1603;Release a E3 1845;Play l F4 2186;Release l F4 2416;Play s F3 2884;Release s F3 3128;";
         this.keyToNotes = {};
         //this.exampleRecord = "Play j D4 444;Release j D4 651;Play k E4 997;Release k E4 1238;Play a E3 1603;Release a E3 1845;Play l F4 2186;Release l F4 2416;Play s F3 2884;Release s F3 3128;";
 
@@ -70,7 +69,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                 }
                 this.keyToNotes[k].push(this.instr.play(NoteMap[k]));
                 // this.synth.triggerAttack(NoteMap[k]);
-                this.synth.triggerAttack(NoteMap[k]);
+                //this.synth.triggerAttack(NoteMap[k]);
                 if (this.state.recording) {
                     this.record = this.record + 'Play ' + k + ' ' + NoteMap[k] + ' ' + (new Date().getTime() - this.state.recording) + ' ' + this.state.soundOption + ';';
                     //console.log(this.record);
@@ -186,10 +185,10 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
             if (tokens[0] === 'Play') {
                 console.log(tokens[1]);
                 //setInterval(this.noteKeyboardManager.addDownKey(tokens[1]), tokens[3]);
-                this.synth.triggerAttack(tokens[2], Number(tokens[3]) / 1000);
+                //this.synth.triggerAttack(tokens[2], Number(tokens[3]) / 1000);
             } else {
                 //setInterval(this.noteKeyboardManager.removeDownKey(tokens[1]), tokens[3]);
-                this.synth.triggerRelease(tokens[2], Number(tokens[3]) / 1000);
+                //this.synth.triggerRelease(tokens[2], Number(tokens[3]) / 1000);
             }
         }
     }
