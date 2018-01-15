@@ -16,15 +16,15 @@ function makeTopRow(): INoteUIRow {
 	return {
 		notePositions: [
 			makeINoteUIPosition("Q", 81),
-			makeINoteUIPosition("W", 87),
-			makeINoteUIPosition("E", 69),
+			makeINoteUIPosition("W", 87, "#aaa"),
+			makeINoteUIPosition("E", 69, "#aaa"),
 			makeINoteUIPosition("R", 82),
-			makeINoteUIPosition("T", 84),
-			makeINoteUIPosition("Y", 89),
-			makeINoteUIPosition("U", 85),
+			makeINoteUIPosition("T", 84, "#aaa"),
+			makeINoteUIPosition("Y", 89, "#aaa"),
+			makeINoteUIPosition("U", 85, "#aaa"),
 			makeINoteUIPosition("I", 73),
-			makeINoteUIPosition("O", 79),
-			makeINoteUIPosition("P", 80),
+			makeINoteUIPosition("O", 79, "#aaa"),
+			makeINoteUIPosition("P", 80, "#aaa"),
 			makeINoteUIPosition("[", 91)
 		]
 	}
@@ -33,16 +33,16 @@ function makeTopRow(): INoteUIRow {
 function makeMiddleRow(): INoteUIRow {
 	return {
 		notePositions: [
-			makeINoteUIPosition("A", 65),
-			makeINoteUIPosition("S", 83),
-			makeINoteUIPosition("D", 68),
-			makeINoteUIPosition("F", 70),
-			makeINoteUIPosition("G", 71),
-			makeINoteUIPosition("H", 72),
-			makeINoteUIPosition("J", 74),
-			makeINoteUIPosition("K", 75),
-			makeINoteUIPosition("L", 76),
-			makeINoteUIPosition(";", 59)
+			makeINoteUIPosition("A", 65, "#ddd"),
+			makeINoteUIPosition("S", 83, "#ddd"),
+			makeINoteUIPosition("D", 68, "#ddd"),
+			makeINoteUIPosition("F", 70, "#ddd"),
+			makeINoteUIPosition("G", 71, "#ddd"),
+			makeINoteUIPosition("H", 72, "#ddd"),
+			makeINoteUIPosition("J", 74, "#ddd"),
+			makeINoteUIPosition("K", 75, "#ddd"),
+			makeINoteUIPosition("L", 76, "#ddd"),
+			makeINoteUIPosition(";", 59, "#ddd")
 		]
 	}
 }

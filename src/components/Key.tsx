@@ -17,6 +17,7 @@ export class Key extends React.Component<IKeyProps, IKeyState> {
             <div style={[
                 OpenSansFont,
                 Key.styles.base,
+                Key.styles.setColor(this.props.color),
                 Key.styles.space(this.props.isSpace),
                 Key.styles.downState(this.props.isDown)
                 // Key.styles.dummyState(this.props.isDummy)
@@ -46,6 +47,11 @@ export class Key extends React.Component<IKeyProps, IKeyState> {
             fontSize: "1em",
             borderRadius: "4px",
             border: "1px solid black"
+        },
+        setColor: (color: string) => {
+            return {
+                backgroundColor: color
+            };
         },
         space: (isSpace: boolean) => {
             if (isSpace) {
@@ -83,6 +89,7 @@ export interface IKeyProps {
     notePosition: INoteUIPosition;
     isSpace: boolean;
     isDown: boolean;
+    color: string;
 }
 
 export interface IKeyState {
