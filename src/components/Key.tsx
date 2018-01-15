@@ -65,7 +65,7 @@ export class Key extends React.Component<IKeyProps, IKeyState> {
         downState: (isDown: boolean) => {
             if (isDown) {
                 return {
-                    backgroundColor: "red"
+                    backgroundColor: "#ff9999"
                 };
             }
 

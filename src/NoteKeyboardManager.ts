@@ -51,7 +51,7 @@ export class NoteKeyboardManager extends EventEmitter {
         // this.played.push(toPush);
     }
 
-    private emitStateChanged() {
+    public emitStateChanged() {
         this.emit(NoteKeyboardManager.STATE_CHANGED, <ITotalNoteState> {
             down: this.down.slice(),
             // played: this.played.slice()

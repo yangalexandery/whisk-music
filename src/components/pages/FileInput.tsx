@@ -10,7 +10,13 @@ export class FileSelector extends React.Component<undefined, undefined>
 
     handleChange(selectorFiles: FileList)
     {
-        console.log(selectorFiles);
+        console.log(selectorFiles[0]);
+        var reader = new FileReader();
+        reader.onload = function(){
+          var text = reader.result;
+          console.log(reader.result);
+        };
+        reader.readAsText(selectorFiles[0]);
     }
 
     render ()

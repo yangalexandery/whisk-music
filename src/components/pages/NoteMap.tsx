@@ -1,5 +1,6 @@
 export const DEFAULT_SOUND_OPTION = 'Synth';
 
+// Hardcoded note map
 export const NoteMap = {
 	q: 'B3',
 	a: 'C4',
