@@ -377,7 +377,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                         <form onSubmit={this.handleFormSubmit.bind(this)}>
                             {
                                 PlayerPageComponent.pianoInstrOptions.map((pianoInstrOption, i) => {
-                                    return (<div className="radio">
+                                    return (<div className="radio" key={i}>
                                                 <label>
                                                     <input type="radio" value={pianoInstrOption.label} checked={this.state.soundOption === pianoInstrOption.label}
                                                            onChange={this.handleOptionChange.bind(this)} />
