@@ -42,6 +42,20 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
     ac: AudioContext
     keyToNotes: {[key: string]: any[]};
 
+    public static readonly pianoInstrOptions = [
+        {label: "acoustic_grand_piano", name: "Piano"},
+        {label: "clavinet", name: "Clavinet"},
+        {label: "marimba", name: "Marimba"},
+        {label: "alto_sax", name: "Alto Sax"},
+        {label: "bassoon", name: "Bassoon"},
+        {label: "clarinet", name: "Clarinet"},
+        {label: "flute", name: "Flute"},
+        {label: "cello", name: "Cello"},
+        {label: "violin", name: "Violin"},
+        {label: "steel_drums", name: "Steel Drums"},
+        {label: "woodblock", name: "Woodblock"},
+    ]
+
     constructor(props: IPlayerPageComponentProps) {
         super(props);
 
@@ -204,10 +218,10 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
     // Plays a recording string
     // TODO: Play recording from an uploaded file
     private playRecord(record: string) {
-        var lines = record.split(';');
-        var currentTime: number = new Date().getTime();
-        for (var i in lines) {
-            var tokens = lines[i].split(' ');
+        let lines = record.split(';');
+        let currentTime: number = new Date().getTime();
+        for (let i in lines) {
+            let tokens = lines[i].split(' ');
             if (tokens[0] === 'Play') {
                 // console.log("Set timeout trigger for note " + tokens[1]);
                 setTimeout(this.triggerNote.bind(this, tokens), currentTime + Number(tokens[3]) - new Date().getTime());
@@ -227,9 +241,9 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
     }
 
     render() {
-        var SoundOptions = this.SoundOptions.bind(this);
-        var RecordButton = this.RecordButton.bind(this);
-        var FileSelector = this.FileSelector.bind(this);
+        let SoundOptions = this.SoundOptions.bind(this);
+        let RecordButton = this.RecordButton.bind(this);
+        let FileSelector = this.FileSelector.bind(this);
         return (
             <div style={[
 
@@ -362,83 +376,17 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                         <h1 style={{fontSize: '1.2em'}}>Change Instrument</h1>
                         <br/>
                         <form onSubmit={this.handleFormSubmit.bind(this)}>
-                            <div className="radio">
-                                <label>
-                                    <input type="radio" value="acoustic_grand_piano" checked={this.state.soundOption === 'acoustic_grand_piano'} onChange={this.handleOptionChange.bind(this)} />
-                                    Piano
-
-                                </label>
-                            </div>
-
-                            <div className="radio">
-                                <label>
-                                    <input type="radio" value="clavinet" checked={this.state.soundOption === 'clavinet'} onChange={this.handleOptionChange.bind(this)} />
-                                    Clavinet
-                                </label>
-                            </div>
-
-                            <div className="radio">
-                                <label>
-                                    <input type="radio" value="marimba" checked={this.state.soundOption === 'marimba'} onChange={this.handleOptionChange.bind(this)} />
-                                    Marimba
-                                </label>
-                            </div>
-
-                            <div className="radio">
-                                <label>
-                                    <input type="radio" value="alto_sax" checked={this.state.soundOption === 'alto_sax'} onChange={this.handleOptionChange.bind(this)} />
-                                    Alto Sax
-                                </label>
-                            </div>
-
-                            <div className="radio">
-                                <label>
-                                    <input type="radio" value="bassoon" checked={this.state.soundOption === 'bassoon'} onChange={this.handleOptionChange.bind(this)} />
-                                    Bassoon
-                                </label>
-                            </div>
-
-                            <div className="radio">
-                                <label>
-                                    <input type="radio" value="clarinet" checked={this.state.soundOption === 'clarinet'} onChange={this.handleOptionChange.bind(this)} />
-                                    Clarinet
-                                </label>
-                            </div>
-
-                            <div className="radio">
-                                <label>
-                                    <input type="radio" value="flute" checked={this.state.soundOption === 'flute'} onChange={this.handleOptionChange.bind(this)} />
-                                    Flute
-                                </label>
-                            </div>
-
-                            <div className="radio">
-                                <label>
-                                    <input type="radio" value="cello" checked={this.state.soundOption === 'cello'} onChange={this.handleOptionChange.bind(this)} />
-                                    Cello
-                                </label>
-                            </div>
-
-                            <div className="radio">
-                                <label>
-                                    <input type="radio" value="violin" checked={this.state.soundOption === 'violin'} onChange={this.handleOptionChange.bind(this)} />
-                                    Violin
-                                </label>
-                            </div>
-
-                            <div className="radio">
-                                <label>
-                                    <input type="radio" value="steel_drums" checked={this.state.soundOption === 'steel_drums'} onChange={this.handleOptionChange.bind(this)} />
-                                    Steel Drums
-                                </label>
-                            </div>
-
-                            <div className="radio">
-                                <label>
-                                    <input type="radio" value="woodblock" checked={this.state.soundOption === 'woodblock'} onChange={this.handleOptionChange.bind(this)} />
-                                    Woodblock
-                                </label>
-                            </div>
+                            {
+                                PlayerPageComponent.pianoInstrOptions.map((pianoInstrOption, i) => {
+                                    return (<div className="radio">
+                                                <label>
+                                                    <input type="radio" value={pianoInstrOption.label} checked={this.state.soundOption === pianoInstrOption.label}
+                                                           onChange={this.handleOptionChange.bind(this)} />
+                                                    {pianoInstrOption.name}
+                                                </label>
+                                            </div>) 
+                                })
+                            }
                             <br />
                             <button className="btn btn-default" type="submit">Change Instrument</button>
                         </form>
@@ -454,8 +402,8 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         if (this.state.recording) {
 
             // Download the recording
-            var element = document.createElement("a");
-            var file = new Blob([this.record], { type: 'text/plain' });
+            let element = document.createElement("a");
+            let file = new Blob([this.record], { type: 'text/plain' });
             element.href = URL.createObjectURL(file);
             element.download = "recording.txt";
             element.click();
@@ -480,7 +428,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
 
     private handleChange(selectorFiles: FileList) {
         // console.log(selectorFiles[0]);
-        var reader = new FileReader();
+        let reader = new FileReader();
         reader.onload = function(){
             // console.log(reader.result);
             this.playRecord(reader.result);
@@ -512,8 +460,8 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
 
     updateClock() {
         this.drawPending = false;
-        var now = this.getTimeStamp();
-        var deltaTime = now - (this.time || now);
+        let now = this.getTimeStamp();
+        let deltaTime = now - (this.time || now);
         this.time = now;
 
         if (this.screenModel) {
