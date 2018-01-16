@@ -167,7 +167,6 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         this.framesSinceMetronomePlayed = 0;
         this.metronome.on(Metronome.BEAT_START, (k: string) => {
             if (this.metronome && this.framesSinceMetronomePlayed > 10 ) {
-                console.log("good");
                 this.framesSinceMetronomePlayed = 0;
                 if (!this.metronome.mute) {
                     this.metronomeInstr.play("D4").stop(this.ac.currentTime + 0.25);

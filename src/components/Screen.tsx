@@ -53,7 +53,6 @@ export class ScreenModel {
             if (!tick.isMiddle) {
                 tick.pos -= this.pixelsPerSecond * deltaTime / 1000.0;
                 if (this.width / 2.0 - 6 < tick.pos && tick.pos < this.width / 2.0 + 1) {
-                    console.log("testtttt");
                     this.metronome.emit(Metronome.BEAT_START, "");
                 }
             }
