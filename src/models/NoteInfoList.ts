@@ -25,6 +25,15 @@ function getSoundFileUrl(noteName: string): string {
     return rootPath + "res/notes/" + noteName + ".mp3";
 }
 
+// WARNING: HACKY AND SUBJECT TO CHANGE. CAREFUL THIS DOESN'T BREAK
+export function getStarterNotes(): INoteInfo[] {
+    return [
+        NoteInfoList.notes[1],
+        NoteInfoList.notes[3],
+        NoteInfoList.notes[7],
+    ]
+}
+
 // function makeSoundFileList(noteName: string): string[] {
 //     return ["1", "2", "3", "4", "5", "6"].map(s => rootPath + "res/notes/" + noteName + "-" + s + ".mp3");
 // }

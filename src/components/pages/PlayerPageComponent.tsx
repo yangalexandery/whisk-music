@@ -4,6 +4,9 @@ import * as color from "color";
 import * as Tone from "tone";
 import * as Soundfont from "soundfont-player";
 
+import { AudioOutputHelper } from "../../AudioOutputHelper";
+import { INoteInfo } from "../../models/INoteInfo";
+import { NoteInfoList, getStarterNotes } from "../../models/NoteInfoList";
 import { Key } from "../Key";
 import { NoteMap } from "./NoteMap";
 import { Stopwatch } from "./Stopwatch";
@@ -20,6 +23,9 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
 
     // Class variables
     noteKeyboardManager: NoteKeyboardManager;
+    audioOutputHelper: Promise<AudioOutputHelper>;
+    keyMapping: {[key: string]: INoteInfo};
+
     drawPending: boolean;
     rafId: any;
     time: number;
@@ -50,13 +56,22 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         };
 
         // Initialization of class variables
+        this.keyMapping = {};
+
+        let starterNotes = getStarterNotes();
+        this.audioOutputHelper = AudioOutputHelper.getInstance(starterNotes);
+        this.keyMapping["z"] = starterNotes[0];
+        this.keyMapping["x"] = starterNotes[1];
+        this.keyMapping["c"] = starterNotes[2];
+
+        this.keyToNotes = {};
         this.recording = 0;
         this.record = '';
-        this.keyToNotes = {};
         this.noteKeyboardManager = new NoteKeyboardManager(this);
         this.noteKeyboardManager.attachListeners();
 
         // Keyboard listener to play sounds
+        // TODO: REFACTOR THIS PART
         this.noteKeyboardManager.on(NoteKeyboardManager.KEY_START, (k: string) => {
             if (k in NoteMap) {
                 this.screenModel.addPlayerTick();
@@ -69,6 +84,20 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                 if (this.state.recording) {
                     this.record = this.record + 'Play ' + k + ' ' + NoteMap[k] + ' ' + (new Date().getTime() - this.state.recording) + ' ' + this.state.soundOption + ';';
                 }
+            } else {
+                if (k in this.keyMapping) {
+                    this.screenModel.addPlayerTick();
+
+                    if(!this.keyToNotes[k]) {
+                        this.keyToNotes[k] = [];
+                    }
+                    this.audioOutputHelper.then(helper => {
+                        this.keyToNotes[k].push(helper.playNote(this.keyMapping[k], true, 100000));
+                    });
+                    if (this.state.recording) {
+                        this.record = this.record + 'Play ' + k + ' ' + NoteMap[k] + ' ' + (new Date().getTime() - this.state.recording) + ' ' + this.state.soundOption + ';';
+                    }
+                }
             }
             if (k === 'm') {
                 this.metronome.mute = !this.metronome.mute;
@@ -77,7 +106,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
 
         // Keyboard listener to end sounds
         this.noteKeyboardManager.on(NoteKeyboardManager.KEY_END, (k: string) => {
-            if (k in NoteMap) {
+            if (k in NoteMap) {// HACKY, will prob break with changes
                 if (!this.keyToNotes[k]) {
                     this.keyToNotes[k] = [];
                 }
@@ -87,6 +116,21 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                 this.keyToNotes[k] = [];
                 if (this.state.recording) {
                     this.record = this.record + 'Release ' + k + ' ' + NoteMap[k] + ' ' + (new Date().getTime() - this.state.recording) + ' ' + this.state.soundOption + ';';
+                }
+            } else {
+                if (k in this.keyMapping) {
+                    if (!this.keyToNotes[k]) {
+                        this.keyToNotes[k] = [];
+                    }
+                    this.audioOutputHelper.then(helper => {
+                        this.keyToNotes[k].map((note, i) => {
+                            note.stop();
+                        });
+                    });
+                    this.keyToNotes[k] = [];
+                    if (this.state.recording) {
+                        this.record = this.record + 'Release ' + k + ' ' + NoteMap[k] + ' ' + (new Date().getTime() - this.state.recording) + ' ' + this.state.soundOption + ';';
+                    }
                 }
             }
         });
