@@ -30,8 +30,12 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
     rafId: any;
     time: number;
     synth: Tone.Synth;
-    recording: number;
     record: string;
+    recordingTime: number;
+    recordingKey: string;
+    recordMapping: {[key: string]: string};
+    playMapping: {[key: string]: string};
+    recordings: Array<string>;
     exampleRecord: string;
     screen: Screen;
     screenModel: ScreenModel;
@@ -65,12 +69,13 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                 down: [],
             },
             soundOption: 'acoustic_grand_piano',
-            recording: 0,
             drawPending: false,
         };
 
         // Initialization of class variables
         this.keyMapping = {};
+        this.recordMapping = {};
+        this.playMapping = {};
 
         let starterNotes = getStarterNotes();
         this.audioOutputHelper = AudioOutputHelper.getInstance(starterNotes);
@@ -78,9 +83,23 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         this.keyMapping["x"] = starterNotes[1];
         this.keyMapping["c"] = starterNotes[2];
 
+        // Hardcode in record strings
+        this.recordMapping["1"] = 'good';
+        // this.recordMapping["2"] = 'good';
+        this.recordMapping["3"] = 'good';
+        // this.recordMapping["4"] = 'good';
+        this.recordMapping["5"] = 'good';
+        // this.recordMapping["6"] = 'good';
+
+        this.playMapping["2"] = 'good';
+        this.playMapping["4"] = 'good';
+        this.playMapping["6"] = 'good';
+
+
         this.keyToNotes = {};
-        this.recording = 0;
+        this.recordingKey = '';
         this.record = '';
+        this.recordings = new Array(256);
         this.noteKeyboardManager = new NoteKeyboardManager(this);
         this.noteKeyboardManager.attachListeners();
 
@@ -95,10 +114,13 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                     this.keyToNotes[k] = [];
                 }
                 this.keyToNotes[k].push(this.instr.play(NoteMap[k]));
-                if (this.state.recording) {
-                    this.record = this.record + 'Play ' + k + ' ' + NoteMap[k] + ' ' + (new Date().getTime() - this.state.recording) + ' ' + this.state.soundOption + ';';
+                if (this.recordingTime) {
+                    this.record = this.record + 'Play ' + k + ' ' + NoteMap[k] + ' ' + (new Date().getTime() - this.recordingTime) + ' ' + this.state.soundOption + ';';
                 }
             } else {
+
+                // Z, X, C percussion keys
+
                 if (k in this.keyMapping) {
                     this.screenModel.addPlayerTick();
 
@@ -108,14 +130,37 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                     this.audioOutputHelper.then(helper => {
                         this.keyToNotes[k].push(helper.playNote(this.keyMapping[k], true, 100000));
                     });
-                    if (this.state.recording) {
-                        this.record = this.record + 'Play ' + k + ' ' + NoteMap[k] + ' ' + (new Date().getTime() - this.state.recording) + ' ' + this.state.soundOption + ';';
+                    if (this.recordingTime) {
+                        this.record = this.record + 'Play ' + k + ' ' + NoteMap[k] + ' ' + (new Date().getTime() - this.recordingTime) + ' ' + this.state.soundOption + ';';
                     }
                 }
+            } 
+
+            if (k in this.recordMapping) {
+                // console.log("Recording from key " + k);
+                this.recordingKey = k;
+                this.recordingTime = new Date().getTime();
+                this.downKey(' ');
             }
+
+            if (k in this.playMapping) {
+                // console.log("Play recording from key " + k);
+                var toPlay = this.recordings[k.charCodeAt(0) - 1];
+                this.playRecord(toPlay);
+            }
+
             if (k === 'm') {
                 this.metronome.mute = !this.metronome.mute;
             }
+
+            /*if (k === ' ') {
+                console.log("Stop recording from key " + this.recordingKey);
+                this.recordings[this.recordingKey.charCodeAt(0)] = this.record;
+                // console.log(this.recordings[49]);
+                this.playRecord(this.recordings[this.recordingKey.charCodeAt(0)]);
+                this.record = '';
+                this.recordingKey = '';
+            }*/
         });
 
         // Keyboard listener to end sounds
@@ -128,8 +173,8 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                     note.stop();
                 });
                 this.keyToNotes[k] = [];
-                if (this.state.recording) {
-                    this.record = this.record + 'Release ' + k + ' ' + NoteMap[k] + ' ' + (new Date().getTime() - this.state.recording) + ' ' + this.state.soundOption + ';';
+                if (this.recordingTime) {
+                    this.record = this.record + 'Release ' + k + ' ' + NoteMap[k] + ' ' + (new Date().getTime() - this.recordingTime) + ' ' + this.state.soundOption + ';';
                 }
             } else {
                 if (k in this.keyMapping) {
@@ -142,9 +187,22 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                         });
                     });
                     this.keyToNotes[k] = [];
-                    if (this.state.recording) {
-                        this.record = this.record + 'Release ' + k + ' ' + NoteMap[k] + ' ' + (new Date().getTime() - this.state.recording) + ' ' + this.state.soundOption + ';';
+                    if (this.recordingTime) {
+                        this.record = this.record + 'Release ' + k + ' ' + NoteMap[k] + ' ' + (new Date().getTime() - this.recordingTime) + ' ' + this.state.soundOption + ';';
                     }
+                }
+            }
+            if (k === ' ') {
+                if (!(this.recordingKey === '')) {
+                    // console.log("Stop recording from key " + this.recordingKey);
+                    this.recordings[this.recordingKey.charCodeAt(0)] = this.record;
+                    // console.log("Putting into " + this.recordingKey + " this record: " + this.record);
+                    // console.log(this.recordings[49]);
+                    // console.log("Play record from key " + this.recordingKey);
+                    // this.playRecord(this.recordings[this.recordingKey.charCodeAt(0)]);
+                    this.record = '';
+                    this.recordingKey = '';
+                    this.recordingTime = 0;
                 }
             }
         });
@@ -191,6 +249,12 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         this.metronomeInstr = instr;
     }
 
+    private downKey(k: string) {
+        if (this.noteKeyboardManager.addDownKey(k)) {
+            this.noteKeyboardManager.emitStateChanged();
+        }
+    }
+
     // Triggers a note
     private triggerNote(note) {
         // If instrument is not correct, set it to correct instrument
@@ -201,8 +265,8 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         }
         let k = note[1];
         if (this.noteKeyboardManager.addDownKey(k)) {
-                this.noteKeyboardManager.emit(NoteKeyboardManager.KEY_START, k);
-                this.noteKeyboardManager.emitStateChanged();
+            this.noteKeyboardManager.emit(NoteKeyboardManager.KEY_START, k);
+            this.noteKeyboardManager.emitStateChanged();
         }
     }
 
@@ -369,7 +433,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         this.setState({
             soundOption: changeEvent.target.value
         });
-        // Doesn't work for some reason, delayed by one change: this.updateInstrument();
+        this.updateInstrument();
     }
 
     // I don't think this is ever called because form is never submitted (no button)
@@ -400,7 +464,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                                 })
                             }
                             <br />
-                            <button className="btn btn-default" type="submit">Change Instrument</button>
+                            {/*<button className="btn btn-default" type="submit">Change Instrument</button>*/}
                         </form>
 
                     </div>
@@ -411,7 +475,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
 
 
     private handleRecording() {
-        if (this.state.recording) {
+        if (this.recordingTime) {
 
             // Download the recording
             let element = document.createElement("a");
@@ -420,12 +484,12 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
             element.download = "recording.txt";
             element.click();
 
-            this.setState({ recording: 0 });
+            this.recordingTime = 0;
             this.record = '';
 
         } else {
             // Start recording
-            this.setState({ recording: new Date().getTime() });
+            this.recordingTime = new Date().getTime();
         }
     }
 
@@ -433,7 +497,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
     private RecordButton() {
         return (
             <div>
-                <button onClick={() => this.handleRecording()}>{this.state.recording ? 'Stop Recording' : 'Start Recording'}</button>
+                <button onClick={() => this.handleRecording()}>{this.recordingTime ? 'Stop Recording' : 'Start Recording'}</button>
             </div>
         );
     }
@@ -616,6 +680,5 @@ export interface IPlayerPageComponentProps {
 export interface IPlayerPageComponentState {
     noteState: ITotalNoteState;
     soundOption: string;
-    recording: number;
     drawPending: boolean;
 }

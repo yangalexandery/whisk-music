@@ -86,7 +86,7 @@ function makeBottomRow(): INoteUIRow {
 function makeSpaceRow(): INoteUIRow {
 	return {
 		notePositions: [
-			makeINoteUIPosition("SPACE", 32)
+			makeINoteUIPosition("STOP RECORDING", 32)
 		]
 	}
 }
