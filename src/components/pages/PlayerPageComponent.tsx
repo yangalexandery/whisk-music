@@ -288,6 +288,19 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                                 PlayerPageComponent.styles.noteContainer
                             ]}>
                                 {
+                                    NoteUIPositionList.numberRow.notePositions.map((notePos, i) => {
+                                        let k = notePos.keyboardCharacter.toLowerCase();
+                                        // let note = getINoteInfoForPositionIndex(notePos.index, this.noteKeyboardManager.pitchShift, notePos.isDummy);
+                                        return <Key key={i} notePosition={notePos} isSpace={false} color={notePos.color}
+                                                    isDown={this.isKeyDown(k)}/>;
+                                    })
+                                }
+                            </div>
+                            <div style={[
+                                PlayerPageComponent.styles.flex,
+                                PlayerPageComponent.styles.noteContainer
+                            ]}>
+                                {
                                     NoteUIPositionList.topRow.notePositions.map((notePos, i) => {
                                         let k = notePos.keyboardCharacter.toLowerCase();
                                         // let note = getINoteInfoForPositionIndex(notePos.index, this.noteKeyboardManager.pitchShift, notePos.isDummy);

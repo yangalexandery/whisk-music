@@ -6,10 +6,30 @@ export interface INoteUIRow {
 }
 
 export class NoteUIPositionList {
+	static readonly numberRow: INoteUIRow = makeNumberRow();
 	static readonly topRow: INoteUIRow = makeTopRow();
 	static readonly middleRow: INoteUIRow = makeMiddleRow();
 	static readonly bottomRow: INoteUIRow = makeBottomRow();
 	static readonly spaceRow: INoteUIRow = makeSpaceRow();
+}
+
+function makeNumberRow(): INoteUIRow {
+	return {
+		notePositions: [
+			makeINoteUIPosition("1", 49, "#ccffff"),
+			makeINoteUIPosition("2", 50, "#ccffff"),
+			makeINoteUIPosition("3", 51, "#ccffff"),
+			makeINoteUIPosition("4", 52, "#ccffff"),
+			makeINoteUIPosition("5", 53, "#ccffff"),
+			makeINoteUIPosition("6", 54, "#ccffff")
+			/*makeINoteUIPosition("7", 55),
+			makeINoteUIPosition("8", 56),
+			makeINoteUIPosition("9", 57),
+			makeINoteUIPosition("0", 48),
+			makeINoteUIPosition("-", 45),
+			makeINoteUIPosition("=", 61)*/
+		]
+	}
 }
 
 function makeTopRow(): INoteUIRow {
@@ -50,13 +70,13 @@ function makeMiddleRow(): INoteUIRow {
 function makeBottomRow(): INoteUIRow {
 	return {
 		notePositions: [
-			makeINoteUIPosition("Z", 90),
-			makeINoteUIPosition("X", 88),
-			makeINoteUIPosition("C", 67),
+			makeINoteUIPosition("Z", 90, "#99ffcc"),
+			makeINoteUIPosition("X", 88, "#99ffcc"),
+			makeINoteUIPosition("C", 67, "#99ffcc"),
 			makeINoteUIPosition("V", 86),
 			makeINoteUIPosition("B", 66),
 			makeINoteUIPosition("N", 78),
-			makeINoteUIPosition("M", 77, "#888"),
+			makeINoteUIPosition("M", 77, "#ffff99"),
 			makeINoteUIPosition(",", 44),
 			makeINoteUIPosition(".", 46)
 		]
