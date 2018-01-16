@@ -8,6 +8,7 @@ import { AudioOutputHelper } from "../../AudioOutputHelper";
 import { INoteInfo } from "../../models/INoteInfo";
 import { NoteInfoList, getStarterNotes } from "../../models/NoteInfoList";
 import { Key } from "../Key";
+import { InstrumentOption } from "../InstrumentOption";
 import { NoteMap } from "./NoteMap";
 import { Stopwatch } from "./Stopwatch";
 import { OpenSansFont } from "../../styles/GlobalStyles";
@@ -45,6 +46,9 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
     framesSinceMetronomePlayed: number;
     ac: AudioContext
     keyToNotes: {[key: string]: any[]};
+
+    soundOptionComponent: InstrumentOption;
+
 
     public static readonly pianoInstrOptions = [
         {label: "acoustic_grand_piano", name: "Piano"},
@@ -313,104 +317,109 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                 PlayerPageComponent.styles.base,
                 PlayerPageComponent.styles.flex
             ]}>
-                <div style={{ width: "15%", paddingRight: "5em" }}>
-                    <div style={[OpenSansFont]}>
-                        <Stopwatch />
-                        <br/>
-                        <SoundOptions />
-                        <br/> <br/>
-                        <h1 style={{fontSize: '1.2em'}}>Play or Load Recording</h1>
-                        <br/>
-                        <RecordButton /> 
-                        <br/>
-                        <FileSelector />
-                    </div>
-                </div>
-                <div style={{ width: "60%" }}>
-                    <div style={[
-                        PlayerPageComponent.styles.flex,
-                        PlayerPageComponent.styles.visualContainer
-                    ]}>
+                <div style={{ width: "100%", height: "100%", display: "flex" }}>
+                    <div style={{ width: "15%", height: "100%", float: "left"}}>
                         <div style={[
-                            PlayerPageComponent.styles.flex,
-                            PlayerPageComponent.styles.screenContainer
-                        ]}>
-                            <Screen ref={(screen) => {
-                                if (screen) {
-                                    this.screenModel.setScreen(screen);
-                                }
-                            }} screenModel={this.screenModel}/>
+                            OpenSansFont, 
+                            {borderRight: "1px solid black", height: "100%"}
+                            ]}>
+                            <Stopwatch />
+                            <br/>
+                            <SoundOptions />
+                            <br/> <br/>
+                            <h1 style={{fontSize: '1.2em'}}>Play or Load Recording</h1>
+                            <br/>
+                            <RecordButton /> 
+                            <br/>
+                            <FileSelector />
                         </div>
                     </div>
-                    <div style={[
-                        PlayerPageComponent.styles.flex,
-                        PlayerPageComponent.styles.keyboardContainer
-                    ]}>
-                        <div>
+                    <div style={{ width: "80%" }}>
+                        <div style={[
+                            PlayerPageComponent.styles.flex,
+                            PlayerPageComponent.styles.visualContainer
+                        ]}>
                             <div style={[
                                 PlayerPageComponent.styles.flex,
-                                PlayerPageComponent.styles.noteContainer
+                                PlayerPageComponent.styles.screenContainer
                             ]}>
-                                {
-                                    NoteUIPositionList.numberRow.notePositions.map((notePos, i) => {
-                                        let k = notePos.keyboardCharacter.toLowerCase();
-                                        // let note = getINoteInfoForPositionIndex(notePos.index, this.noteKeyboardManager.pitchShift, notePos.isDummy);
-                                        return <Key key={i} notePosition={notePos} isSpace={false} color={notePos.color}
-                                                    isDown={this.isKeyDown(k)}/>;
-                                    })
-                                }
+                                <Screen ref={(screen) => {
+                                    if (screen) {
+                                        this.screenModel.setScreen(screen);
+                                    }
+                                }} screenModel={this.screenModel}/>
                             </div>
-                            <div style={[
-                                PlayerPageComponent.styles.flex,
-                                PlayerPageComponent.styles.noteContainer
-                            ]}>
-                                {
-                                    NoteUIPositionList.topRow.notePositions.map((notePos, i) => {
-                                        let k = notePos.keyboardCharacter.toLowerCase();
-                                        // let note = getINoteInfoForPositionIndex(notePos.index, this.noteKeyboardManager.pitchShift, notePos.isDummy);
-                                        return <Key key={i} notePosition={notePos} isSpace={false} color={notePos.color}
-                                                    isDown={this.isKeyDown(k)}/>;
-                                    })
-                                }
-                            </div>
-                            <div style={[
-                                PlayerPageComponent.styles.flex,
-                                PlayerPageComponent.styles.noteContainer
-                            ]}>
-                                {
-                                    NoteUIPositionList.middleRow.notePositions.map((notePos, i) => {
-                                        let k = notePos.keyboardCharacter.toLowerCase();
-                                        // let note = getINoteInfoForPositionIndex(notePos.index, this.noteKeyboardManager.pitchShift, notePos.isDummy);
-                                        return <Key key={i} notePosition={notePos} isSpace={false} color={notePos.color}
-                                                    isDown={this.isKeyDown(k)}/>;
-                                    })
-                                }
-                            </div>
-                            <div style={[
-                                PlayerPageComponent.styles.flex,
-                                PlayerPageComponent.styles.noteContainer
-                            ]}>
-                                {
-                                    NoteUIPositionList.bottomRow.notePositions.map((notePos, i) => {
-                                        let k = notePos.keyboardCharacter.toLowerCase();
-                                        // let note = getINoteInfoForPositionIndex(notePos.index, this.noteKeyboardManager.pitchShift, notePos.isDummy);
-                                        return <Key key={i} notePosition={notePos} isSpace={false} color={notePos.color}
-                                                    isDown={this.isKeyDown(k)}/>;
-                                    })
-                                }
-                            </div>
-                            <div style={[
-                                PlayerPageComponent.styles.flex,
-                                PlayerPageComponent.styles.noteContainer
-                            ]}>
-                                {
-                                    NoteUIPositionList.spaceRow.notePositions.map((notePos, i) => {
-                                        let k = " ";
-                                        // let note = getINoteInfoForPositionIndex(notePos.index, this.noteKeyboardManager.pitchShift, notePos.isDummy);
-                                        return <Key key={i} notePosition={notePos} isSpace={true} color={notePos.color}
-                                                    isDown={this.isKeyDown(k)}/>;
-                                    })
-                                }
+                        </div>
+                        <div style={[
+                            PlayerPageComponent.styles.flex,
+                            PlayerPageComponent.styles.keyboardContainer
+                        ]}>
+                            <div>
+                                <div style={[
+                                    PlayerPageComponent.styles.flex,
+                                    PlayerPageComponent.styles.noteContainer
+                                ]}>
+                                    {
+                                        NoteUIPositionList.numberRow.notePositions.map((notePos, i) => {
+                                            let k = notePos.keyboardCharacter.toLowerCase();
+                                            // let note = getINoteInfoForPositionIndex(notePos.index, this.noteKeyboardManager.pitchShift, notePos.isDummy);
+                                            return <Key key={i} notePosition={notePos} isSpace={false} color={notePos.color}
+                                                        isDown={this.isKeyDown(k)}/>;
+                                        })
+                                    }
+                                </div>
+                                <div style={[
+                                    PlayerPageComponent.styles.flex,
+                                    PlayerPageComponent.styles.noteContainer
+                                ]}>
+                                    {
+                                        NoteUIPositionList.topRow.notePositions.map((notePos, i) => {
+                                            let k = notePos.keyboardCharacter.toLowerCase();
+                                            // let note = getINoteInfoForPositionIndex(notePos.index, this.noteKeyboardManager.pitchShift, notePos.isDummy);
+                                            return <Key key={i} notePosition={notePos} isSpace={false} color={notePos.color}
+                                                        isDown={this.isKeyDown(k)}/>;
+                                        })
+                                    }
+                                </div>
+                                <div style={[
+                                    PlayerPageComponent.styles.flex,
+                                    PlayerPageComponent.styles.noteContainer
+                                ]}>
+                                    {
+                                        NoteUIPositionList.middleRow.notePositions.map((notePos, i) => {
+                                            let k = notePos.keyboardCharacter.toLowerCase();
+                                            // let note = getINoteInfoForPositionIndex(notePos.index, this.noteKeyboardManager.pitchShift, notePos.isDummy);
+                                            return <Key key={i} notePosition={notePos} isSpace={false} color={notePos.color}
+                                                        isDown={this.isKeyDown(k)}/>;
+                                        })
+                                    }
+                                </div>
+                                <div style={[
+                                    PlayerPageComponent.styles.flex,
+                                    PlayerPageComponent.styles.noteContainer
+                                ]}>
+                                    {
+                                        NoteUIPositionList.bottomRow.notePositions.map((notePos, i) => {
+                                            let k = notePos.keyboardCharacter.toLowerCase();
+                                            // let note = getINoteInfoForPositionIndex(notePos.index, this.noteKeyboardManager.pitchShift, notePos.isDummy);
+                                            return <Key key={i} notePosition={notePos} isSpace={false} color={notePos.color}
+                                                        isDown={this.isKeyDown(k)}/>;
+                                        })
+                                    }
+                                </div>
+                                <div style={[
+                                    PlayerPageComponent.styles.flex,
+                                    PlayerPageComponent.styles.noteContainer
+                                ]}>
+                                    {
+                                        NoteUIPositionList.spaceRow.notePositions.map((notePos, i) => {
+                                            let k = " ";
+                                            // let note = getINoteInfoForPositionIndex(notePos.index, this.noteKeyboardManager.pitchShift, notePos.isDummy);
+                                            return <Key key={i} notePosition={notePos} isSpace={true} color={notePos.color}
+                                                        isDown={this.isKeyDown(k)}/>;
+                                        })
+                                    }
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -419,7 +428,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         );
     }
 
-    private changeSoundOption(option: string) {
+    public changeSoundOption(option: string) {
         this.setState({ soundOption: option });
         this.updateInstrument();
     }
@@ -454,13 +463,22 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                         <form onSubmit={this.handleFormSubmit.bind(this)}>
                             {
                                 PlayerPageComponent.pianoInstrOptions.map((pianoInstrOption, i) => {
-                                    return (<div className="radio" key={i}>
-                                                <label>
-                                                    <input type="radio" value={pianoInstrOption.label} checked={this.state.soundOption === pianoInstrOption.label}
-                                                           onChange={this.handleOptionChange.bind(this)} />
-                                                    {pianoInstrOption.name}
-                                                </label>
-                                            </div>) 
+                                    if (pianoInstrOption.label === this.state.soundOption) {
+
+                                    }
+                                    return <InstrumentOption key={i} value={pianoInstrOption.label} name={pianoInstrOption.name} pageOwner={this}
+                                            ref={(instrOption) => {
+                                                if (instrOption && pianoInstrOption.label == this.state.soundOption) {
+                                                    this.soundOptionComponent = instrOption;
+                                                }
+                                            }}/>
+                                    // return (<div className="radio" key={i} style={PlayerPageComponent.styles.instrOption}>
+                                    //             <label>
+                                    //                 <input type="radio" value={pianoInstrOption.label} checked={this.state.soundOption === pianoInstrOption.label}
+                                    //                        onChange={this.handleOptionChange.bind(this)} />
+                                    //                 {pianoInstrOption.name}
+                                    //             </label>
+                                    //         </div>) 
                                 })
                             }
                             <br />
