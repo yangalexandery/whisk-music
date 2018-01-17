@@ -45,11 +45,15 @@ export class InstrumentOption extends React.Component<IInstrumentOptionProps, II
         instrOption: {
             height: "25px",
             marginBottom: "5px",
-            marginLeft: "15px",
+            marginLeft: "10px",
             marginRight: "10px",
             border: "1px solid black",
             borderRadius: "4px",
-            padding: "5px"
+            padding: "5px",
+            display: "flex",
+            // justifyContent: "center",
+            alignItems: "center",
+            fontSize: "16px",
         },
         selectedState: (selected: boolean) => {
             if (selected) {
