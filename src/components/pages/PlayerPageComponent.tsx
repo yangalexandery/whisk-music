@@ -316,10 +316,10 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                 PlayerPageComponent.styles.flex
             ]}>
                 <div style={{ width: "95%", height: "95%", display: "flex" }}>
-                    <div style={{ width: "15%", height: "100%", float: "left"}}>
+                    <div style={{ width: "15%", height: "95%", float: "left"}}>
                         <div style={[
                             OpenSansFont, 
-                            { paddingRight: "2em", borderRight: "2px solid black", height: "100%"}
+                            { paddingTop: "2em", paddingRight: "2em", borderRight: "2px solid black", height: "100%"}
                             ]}>
                             <Stopwatch />
                             <br/>

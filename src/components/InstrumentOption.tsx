@@ -58,7 +58,7 @@ export class InstrumentOption extends React.Component<IInstrumentOptionProps, II
         selectedState: (selected: boolean) => {
             if (selected) {
                 return {
-                    backgroundColor: "#aaa"
+                    backgroundColor: "#ccc"
                 };
             }
 
