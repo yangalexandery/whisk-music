@@ -57,18 +57,18 @@ export class Stopwatch extends React.Component {
   render() {
     return (
       <div className="stopwatch">
-        <h1 className="stopwatch-timer" style={{fontSize: '2em'}}>{formattedSeconds(this.state.secondsElapsed)}</h1>
+        <h1 className="stopwatch-timer" style={{fontSize: '2em', textAlign: 'center'}}>{formattedSeconds(this.state.secondsElapsed)}</h1>
         <br/>
-   
+        <div className="wrapper" style={{textAlign: "center"}}>
         {(this.state.secondsElapsed === 0 ||
           this.incrementer === this.state.lastClearedIncrementer
-          ? <Button className="start-btn" onClick={this.handleStartClick.bind(this)}>Start</Button>
-          : <Button className="stop-btn" onClick={this.handleStopClick.bind(this)}>Stop</Button>
+          ? <Button style={{ alignContent: "center" }} className="start-btn" onClick={this.handleStartClick.bind(this)}>Start</Button>
+          : <Button style={{ alignContent: "center" }} className="stop-btn" onClick={this.handleStopClick.bind(this)}>Stop</Button>
         )}
         
         {(this.state.secondsElapsed !== 0 &&
           this.incrementer !== this.state.lastClearedIncrementer
-          ? <Button onClick={this.handleLabClick.bind(this)}>Lap</Button>
+          ? <Button style={{ alignContent: "center" }} onClick={this.handleLabClick.bind(this)}>Lap</Button>
           : null
         )}
 
@@ -85,6 +85,7 @@ export class Stopwatch extends React.Component {
               <li className="stopwatch-lap">T<strong>{i + 1}</strong> - {formattedSeconds(lap)}</li>)
           }
         </ul>
+        </div>
       </div>
     );
   }

@@ -55,7 +55,6 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         {label: "clavinet", name: "Clavinet"},
         {label: "marimba", name: "Marimba"},
         {label: "alto_sax", name: "Alto Sax"},
-        {label: "bassoon", name: "Bassoon"},
         {label: "clarinet", name: "Clarinet"},
         {label: "flute", name: "Flute"},
         {label: "cello", name: "Cello"},
@@ -313,25 +312,24 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         let FileSelector = this.FileSelector.bind(this);
         return (
             <div style={[
-
                 PlayerPageComponent.styles.base,
                 PlayerPageComponent.styles.flex
             ]}>
-                <div style={{ width: "100%", height: "100%", display: "flex" }}>
+                <div style={{ width: "95%", height: "95%", display: "flex" }}>
                     <div style={{ width: "15%", height: "100%", float: "left"}}>
                         <div style={[
                             OpenSansFont, 
-                            {borderRight: "1px solid black", height: "100%"}
+                            { paddingRight: "2em", borderRight: "2px solid black", height: "100%"}
                             ]}>
                             <Stopwatch />
                             <br/>
                             <SoundOptions />
-                            <br/> <br/>
+                            {/*<br/> <br/>
                             <h1 style={{fontSize: '1.2em'}}>Play or Load Recording</h1>
                             <br/>
                             <RecordButton /> 
                             <br/>
-                            <FileSelector />
+                            <FileSelector />*/}
                         </div>
                     </div>
                     <div style={{ width: "80%" }}>
@@ -458,7 +456,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                 <div className="row">
                     <div className="col-sm-12">
 
-                        <h1 style={{fontSize: '1.2em'}}>Change Instrument</h1>
+                        {/*<h1 style={{fontSize: '1.1em'}}>Change Instrument</h1>*/}
                         <br/>
                         <form onSubmit={this.handleFormSubmit.bind(this)}>
                             {
@@ -481,7 +479,6 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                                     //         </div>) 
                                 })
                             }
-                            <br />
                             {/*<button className="btn btn-default" type="submit">Change Instrument</button>*/}
                         </form>
 
