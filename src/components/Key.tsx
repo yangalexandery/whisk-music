@@ -19,7 +19,7 @@ export class Key extends React.Component<IKeyProps, IKeyState> {
                 Key.styles.base,
                 Key.styles.setColor(this.props.color),
                 Key.styles.space(this.props.isSpace),
-                Key.styles.downState(this.props.isDown)
+                Key.styles.downState(this.state.down)//this.props.isDown)
                 // Key.styles.dummyState(this.props.isDummy)
             ]}>
                 {this.props.notePosition.keyboardCharacter}
@@ -62,7 +62,7 @@ export class Key extends React.Component<IKeyProps, IKeyState> {
 
             return {};
         },
-        downState: (isDown: boolean) => {
+        downState: (isDown: number) => {
             if (isDown) {
                 return {
                     backgroundColor: "#ff9999"
@@ -93,5 +93,5 @@ export interface IKeyProps {
 }
 
 export interface IKeyState {
-
+    down: number;
 }

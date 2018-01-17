@@ -27,28 +27,33 @@ export class NoteKeyboardManager extends EventEmitter {
     }
 
     addDownKey(k: string): boolean {
-        if (!this.down.filter(down => k === down.key)[0]) {
-            this.down.push({
-                key: k,
-                start: new Date().getTime()
-            });
-
+        let key = this.playerPageComponent.charToKey[k];
+        if (key && !key.state.down) {
+            key.setState({down: new Date().getTime()});
+            
             return true;
         }
+        // if (!this.down.filter(down => k === down.key)[0]) {
+        //     this.down.push({
+        //         key: k,
+        //         start: new Date().getTime()
+        //     });
+
+        //     return true;
+        // }
 
         return false;
     }
 
     removeDownKey(k: string) {
-        const toRemove = this.down.filter(down => k === down.key)[0] as IDownNote;
-        this.down = this.down.filter(down => k !== down.key);
-        let endTime = new Date().getTime();
-        // const toPush: ICompositionNote = {
-        //     noteInfo: toRemove.note,
-        //     start: this.playerPageComponent.state.videoPosition * 1000 - (endTime - toRemove.start),
-        //     end: this.playerPageComponent.state.videoPosition * 1000
-        // };
-        // this.played.push(toPush);
+        let key = this.playerPageComponent.charToKey[k];
+        if (key && key.state.down) {
+            key.setState({down: null});
+        }
+
+        // const toRemove = this.down.filter(down => k === down.key)[0] as IDownNote;
+        // this.down = this.down.filter(down => k !== down.key);
+        // let endTime = new Date().getTime();
     }
 
     public emitStateChanged() {
@@ -63,7 +68,7 @@ export class NoteKeyboardManager extends EventEmitter {
             let k = e.key.toLowerCase();
             if (this.addDownKey(k)) {
                 this.emit(NoteKeyboardManager.KEY_START, k);
-                this.emitStateChanged();
+                // this.emitStateChanged();
             }
         });
 
@@ -71,7 +76,7 @@ export class NoteKeyboardManager extends EventEmitter {
             let k = e.key.toLowerCase();
             this.removeDownKey(k);
             this.emit(NoteKeyboardManager.KEY_END, k);
-            this.emitStateChanged();
+            // this.emitStateChanged();
         });
     }
 }

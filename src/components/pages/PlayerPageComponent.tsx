@@ -26,6 +26,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
     noteKeyboardManager: NoteKeyboardManager;
     audioOutputHelper: Promise<AudioOutputHelper>;
     keyMapping: {[key: string]: INoteInfo};
+    charToKey: {[keyChar: string]: Key};
 
     drawPending: boolean;
     rafId: any;
@@ -79,6 +80,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         this.keyMapping = {};
         this.recordMapping = {};
         this.playMapping = {};
+        this.charToKey = {};
 
         let starterNotes = getStarterNotes();
         this.audioOutputHelper = AudioOutputHelper.getInstance(starterNotes);
@@ -212,6 +214,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
 
         // Run if state changed
         this.noteKeyboardManager.on(NoteKeyboardManager.STATE_CHANGED, (state: ITotalNoteState) => {
+            console.log("hmmmmm");
             this.setState({
                 noteState: state
             });
@@ -375,7 +378,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                                             let k = notePos.keyboardCharacter.toLowerCase();
                                             // let note = getINoteInfoForPositionIndex(notePos.index, this.noteKeyboardManager.pitchShift, notePos.isDummy);
                                             return <Key key={i} notePosition={notePos} isSpace={false} color={notePos.color}
-                                                        isDown={this.isKeyDown(k)}/>;
+                                                        isDown={this.isKeyDown(k)} ref={(key) => {this.charToKey[k] = key;}}/>;
                                         })
                                     }
                                 </div>
@@ -388,7 +391,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                                             let k = notePos.keyboardCharacter.toLowerCase();
                                             // let note = getINoteInfoForPositionIndex(notePos.index, this.noteKeyboardManager.pitchShift, notePos.isDummy);
                                             return <Key key={i} notePosition={notePos} isSpace={false} color={notePos.color}
-                                                        isDown={this.isKeyDown(k)}/>;
+                                                        isDown={this.isKeyDown(k)} ref={(key) => {this.charToKey[k] = key;}}/>;
                                         })
                                     }
                                 </div>
@@ -401,7 +404,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                                             let k = notePos.keyboardCharacter.toLowerCase();
                                             // let note = getINoteInfoForPositionIndex(notePos.index, this.noteKeyboardManager.pitchShift, notePos.isDummy);
                                             return <Key key={i} notePosition={notePos} isSpace={false} color={notePos.color}
-                                                        isDown={this.isKeyDown(k)}/>;
+                                                        isDown={this.isKeyDown(k)} ref={(key) => {this.charToKey[k] = key;}}/>;
                                         })
                                     }
                                 </div>
@@ -414,7 +417,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                                             let k = " ";
                                             // let note = getINoteInfoForPositionIndex(notePos.index, this.noteKeyboardManager.pitchShift, notePos.isDummy);
                                             return <Key key={i} notePosition={notePos} isSpace={true} color={notePos.color}
-                                                        isDown={this.isKeyDown(k)}/>;
+                                                        isDown={this.isKeyDown(k)} ref={(key) => {this.charToKey[k] = key;}}/>;
                                         })
                                     }
                                 </div>
