@@ -68,7 +68,6 @@
     "soundfont-player": "^0.10.6",
     "tone": "^0.11.11",
     "tslint": "^5.8.0",
-    "typings": "^2.1.1",
-    "web-audio-api": "^0.2.2"
+    "typings": "^2.1.1"
   }
 }
