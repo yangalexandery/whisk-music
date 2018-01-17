@@ -17,6 +17,8 @@ import { NoteUIPositionList } from "../../models/NoteUIPositionList";
 import { ITotalNoteState, makeNewITotalNoteState, NoteKeyboardManager } from "../../NoteKeyboardManager";
 import { Metronome } from "../Metronome";
 
+import { NiceButton } from "../NiceButton";
+
 @Radium
 export class PlayerPageComponent extends React.Component<IPlayerPageComponentProps, IPlayerPageComponentState> {
     props: IPlayerPageComponentProps;
@@ -312,19 +314,24 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
             ]}>
                 <div style={{ width: "95%", height: "95%", display: "flex" }}>
                     <div style={{ width: "15%", height: "95%", float: "left"}}>
-                        <div style={[
-                            OpenSansFont, 
-                            { paddingTop: "2em", paddingRight: "2em", borderRight: "2px solid black", height: "100%"}
+                        <div style={{borderRight: "2px solid black", height: "100%", display: "flex" }}>
+                            <div style={[OpenSansFont, { paddingTop: "2em", flexGrow: "1", height: "100%", float: "left"}]}>
+                                <Stopwatch />
+                                <br/>
+                                <SoundOptions />
+                                {/*<br/> <br/>
+                                <h1 style={{fontSize: '1.2em'}}>Play or Load Recording</h1>
+                                <br/>
+                                <RecordButton /> 
+                                <br/>
+                                <FileSelector />*/}
+                            </div>
+                            <div style={[
+                                PlayerPageComponent.styles.flex,
+                                { width: "2.5em", height: "100%", float: "right"}
                             ]}>
-                            <Stopwatch />
-                            <br/>
-                            <SoundOptions />
-                            {/*<br/> <br/>
-                            <h1 style={{fontSize: '1.2em'}}>Play or Load Recording</h1>
-                            <br/>
-                            <RecordButton /> 
-                            <br/>
-                            <FileSelector />*/}
+                                <NiceButton />
+                            </div>
                         </div>
                     </div>
                     <div style={{ width: "80%" }}>
