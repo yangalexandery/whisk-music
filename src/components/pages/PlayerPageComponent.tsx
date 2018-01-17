@@ -69,9 +69,9 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
 
         // State variables
         this.state = {
-            noteState: {
-                down: [],
-            },
+            // noteState: {
+            //     down: [],
+            // },
             soundOption: 'acoustic_grand_piano',
             drawPending: false,
         };
@@ -214,10 +214,10 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
 
         // Run if state changed
         this.noteKeyboardManager.on(NoteKeyboardManager.STATE_CHANGED, (state: ITotalNoteState) => {
-            console.log("hmmmmm");
-            this.setState({
-                noteState: state
-            });
+            // console.log("hmmmmm");
+            // this.setState({
+            //     noteState: state
+            // });
         });
 
         // Initialize instrument
@@ -302,11 +302,11 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
     }
 
     private isKeyDown(k: string): boolean {
-        if (!k) {
+        if (!k || !this.charToKey[k] || !this.charToKey[k].state.down) {
             return false;
         }
-        const isUserDown = this.state.noteState.down.filter(down => down.key === k).length === 1;
-        return isUserDown;
+        // const isUserDown = this.state.noteState.down.filter(down => down.key === k).length === 1;
+        return true;
     }
 
     render() {
@@ -365,7 +365,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                                             let k = notePos.keyboardCharacter.toLowerCase();
                                             // let note = getINoteInfoForPositionIndex(notePos.index, this.noteKeyboardManager.pitchShift, notePos.isDummy);
                                             return <Key key={i} notePosition={notePos} isSpace={false} color={notePos.color}
-                                                        isDown={this.isKeyDown(k)}/>;
+                                                        isDown={this.isKeyDown(k)} ref={(key) => {this.charToKey[k] = key;}}/>;
                                         })
                                     }
                                 </div>
@@ -696,7 +696,7 @@ export interface IPlayerPageComponentProps {
 
 // State variables
 export interface IPlayerPageComponentState {
-    noteState: ITotalNoteState;
+    // noteState: ITotalNoteState;
     soundOption: string;
     drawPending: boolean;
 }
