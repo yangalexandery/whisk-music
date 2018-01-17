@@ -301,14 +301,6 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         }
     }
 
-    private isKeyDown(k: string): boolean {
-        if (!k || !this.charToKey[k] || !this.charToKey[k].state.down) {
-            return false;
-        }
-        // const isUserDown = this.state.noteState.down.filter(down => down.key === k).length === 1;
-        return true;
-    }
-
     render() {
         let SoundOptions = this.SoundOptions.bind(this);
         let RecordButton = this.RecordButton.bind(this);
@@ -363,9 +355,9 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                                     {
                                         NoteUIPositionList.numberRow.notePositions.map((notePos, i) => {
                                             let k = notePos.keyboardCharacter.toLowerCase();
-                                            // let note = getINoteInfoForPositionIndex(notePos.index, this.noteKeyboardManager.pitchShift, notePos.isDummy);
+
                                             return <Key key={i} notePosition={notePos} isSpace={false} color={notePos.color}
-                                                        isDown={this.isKeyDown(k)} ref={(key) => {this.charToKey[k] = key;}}/>;
+                                                        ref={(key) => {this.charToKey[k] = key;}}/>;
                                         })
                                     }
                                 </div>
@@ -376,9 +368,9 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                                     {
                                         NoteUIPositionList.topRow.notePositions.map((notePos, i) => {
                                             let k = notePos.keyboardCharacter.toLowerCase();
-                                            // let note = getINoteInfoForPositionIndex(notePos.index, this.noteKeyboardManager.pitchShift, notePos.isDummy);
+
                                             return <Key key={i} notePosition={notePos} isSpace={false} color={notePos.color}
-                                                        isDown={this.isKeyDown(k)} ref={(key) => {this.charToKey[k] = key;}}/>;
+                                                        ref={(key) => {this.charToKey[k] = key;}}/>;
                                         })
                                     }
                                 </div>
@@ -389,9 +381,9 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                                     {
                                         NoteUIPositionList.middleRow.notePositions.map((notePos, i) => {
                                             let k = notePos.keyboardCharacter.toLowerCase();
-                                            // let note = getINoteInfoForPositionIndex(notePos.index, this.noteKeyboardManager.pitchShift, notePos.isDummy);
+
                                             return <Key key={i} notePosition={notePos} isSpace={false} color={notePos.color}
-                                                        isDown={this.isKeyDown(k)} ref={(key) => {this.charToKey[k] = key;}}/>;
+                                                        ref={(key) => {this.charToKey[k] = key;}}/>;
                                         })
                                     }
                                 </div>
@@ -402,9 +394,9 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                                     {
                                         NoteUIPositionList.bottomRow.notePositions.map((notePos, i) => {
                                             let k = notePos.keyboardCharacter.toLowerCase();
-                                            // let note = getINoteInfoForPositionIndex(notePos.index, this.noteKeyboardManager.pitchShift, notePos.isDummy);
+
                                             return <Key key={i} notePosition={notePos} isSpace={false} color={notePos.color}
-                                                        isDown={this.isKeyDown(k)} ref={(key) => {this.charToKey[k] = key;}}/>;
+                                                        ref={(key) => {this.charToKey[k] = key;}}/>;
                                         })
                                     }
                                 </div>
@@ -415,9 +407,9 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                                     {
                                         NoteUIPositionList.spaceRow.notePositions.map((notePos, i) => {
                                             let k = " ";
-                                            // let note = getINoteInfoForPositionIndex(notePos.index, this.noteKeyboardManager.pitchShift, notePos.isDummy);
+
                                             return <Key key={i} notePosition={notePos} isSpace={true} color={notePos.color}
-                                                        isDown={this.isKeyDown(k)} ref={(key) => {this.charToKey[k] = key;}}/>;
+                                                        ref={(key) => {this.charToKey[k] = key;}}/>;
                                         })
                                     }
                                 </div>
@@ -473,13 +465,6 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                                                     this.soundOptionComponent = instrOption;
                                                 }
                                             }}/>
-                                    // return (<div className="radio" key={i} style={PlayerPageComponent.styles.instrOption}>
-                                    //             <label>
-                                    //                 <input type="radio" value={pianoInstrOption.label} checked={this.state.soundOption === pianoInstrOption.label}
-                                    //                        onChange={this.handleOptionChange.bind(this)} />
-                                    //                 {pianoInstrOption.name}
-                                    //             </label>
-                                    //         </div>) 
                                 })
                             }
                             {/*<button className="btn btn-default" type="submit">Change Instrument</button>*/}

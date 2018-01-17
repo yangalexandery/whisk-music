@@ -33,14 +33,6 @@ export class NoteKeyboardManager extends EventEmitter {
             
             return true;
         }
-        // if (!this.down.filter(down => k === down.key)[0]) {
-        //     this.down.push({
-        //         key: k,
-        //         start: new Date().getTime()
-        //     });
-
-        //     return true;
-        // }
 
         return false;
     }
@@ -50,16 +42,11 @@ export class NoteKeyboardManager extends EventEmitter {
         if (key && key.state.down) {
             key.setState({down: null});
         }
-
-        // const toRemove = this.down.filter(down => k === down.key)[0] as IDownNote;
-        // this.down = this.down.filter(down => k !== down.key);
-        // let endTime = new Date().getTime();
     }
 
     public emitStateChanged() {
         this.emit(NoteKeyboardManager.STATE_CHANGED, <ITotalNoteState> {
             down: this.down.slice(),
-            // played: this.played.slice()
         });
     }
 
@@ -68,7 +55,6 @@ export class NoteKeyboardManager extends EventEmitter {
             let k = e.key.toLowerCase();
             if (this.addDownKey(k)) {
                 this.emit(NoteKeyboardManager.KEY_START, k);
-                // this.emitStateChanged();
             }
         });
 
@@ -76,7 +62,6 @@ export class NoteKeyboardManager extends EventEmitter {
             let k = e.key.toLowerCase();
             this.removeDownKey(k);
             this.emit(NoteKeyboardManager.KEY_END, k);
-            // this.emitStateChanged();
         });
     }
 }
