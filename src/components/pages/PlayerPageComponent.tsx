@@ -6,19 +6,14 @@ import * as Soundfont from "soundfont-player";
 
 import { AudioOutputHelper } from "../../AudioOutputHelper";
 import { INoteInfo } from "../../models/INoteInfo";
-import { NoteInfoList, getStarterNotes } from "../../models/NoteInfoList";
+import { getStarterNotes } from "../../models/NoteInfoList";
 import { Key } from "../Key";
 import { InstrumentOption } from "../InstrumentOption";
 import { NoteMap } from "./NoteMap";
-import { Stopwatch } from "./Stopwatch";
-import { OpenSansFont } from "../../styles/GlobalStyles";
 import { Screen, ScreenModel } from "../Screen";
 import { NoteUIPositionList } from "../../models/NoteUIPositionList";
-import { ITotalNoteState, makeNewITotalNoteState, NoteKeyboardManager } from "../../NoteKeyboardManager";
+import { NoteKeyboardManager } from "../../NoteKeyboardManager";
 import { Metronome } from "../Metronome";
-
-import { NiceButton } from "../NiceButton";
-import { SoundOptions } from "../SoundOptions";
 import { SidePanel } from "../SidePanel";
 
 @Radium
@@ -224,12 +219,12 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         });
 
         // Run if state changed
-        this.noteKeyboardManager.on(NoteKeyboardManager.STATE_CHANGED, (state: ITotalNoteState) => {
+        // this.noteKeyboardManager.on(NoteKeyboardManager.STATE_CHANGED, (state: ITotalNoteState) => {
             // console.log("hmmmmm");
             // this.setState({
             //     noteState: state
             // });
-        });
+        // });
 
         // Initialize instrument
         // TODO: Have multiple instruments that can be played at the same time
@@ -320,7 +315,6 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
     }
 
     render() {
-        // let SoundOptions = this.SoundOptions.bind(this);
         // let RecordButton = this.RecordButton.bind(this);
         let FileSelector = this.FileSelector.bind(this);
         return (
@@ -331,25 +325,6 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                 <div style={{ width: "95%", height: "95%", display: "flex" }}>
                     <div style={{ width: "17%", height: "95%", float: "left"}}>
                         <SidePanel parent={this} leftPanel={true} />
-                        {/*<div style={{borderRight: "2px solid black", height: "100%", display: "flex" }}>
-                            <div style={[OpenSansFont, { paddingTop: "2em", flexGrow: "1", height: "100%", float: "left"}]}>
-                                <Stopwatch />
-                                <br/>
-                                <SoundOptions parent={this}/>
-                                {<br/> <br/>
-                                <h1 style={{fontSize: '1.2em'}}>Play or Load Recording</h1>
-                                <br/>
-                                <RecordButton /> 
-                                <br/>
-                                <FileSelector />}
-                            </div>
-                            <div style={[
-                                PlayerPageComponent.styles.flex,
-                                { width: "2.5em", height: "100%", float: "right"}
-                            ]}>
-                                <NiceButton arrowDirectionLeft={true}/>
-                            </div>
-                        </div>*/}
                     </div>
                     <div style={{ width: "80%" }}>
                         <div style={[
@@ -467,38 +442,6 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         formSubmitEvent.preventDefault();
         this.updateInstrument();
     }
-
-    // Radio buttons to toggle sound types
-    // private SoundOptions() {
-    //     return (
-    //         <div className="container">
-    //             <div className="row">
-    //                 <div className="col-sm-12">
-
-    //                     {/*<h1 style={{fontSize: '1.1em'}}>Change Instrument</h1>*/}
-    //                     <br/>
-    //                     <form onSubmit={this.handleFormSubmit.bind(this)}>
-    //                         {
-    //                             PlayerPageComponent.pianoInstrOptions.map((pianoInstrOption, i) => {
-    //                                 if (pianoInstrOption.label === this.state.soundOption) {
-
-    //                                 }
-    //                                 return <InstrumentOption key={i} value={pianoInstrOption.label} name={pianoInstrOption.name} pageOwner={this}
-    //                                         ref={(instrOption) => {
-    //                                             if (instrOption && pianoInstrOption.label == this.state.soundOption) {
-    //                                                 this.soundOptionComponent = instrOption;
-    //                                             }
-    //                                         }}/>
-    //                             })
-    //                         }
-    //                         {/*<button className="btn btn-default" type="submit">Change Instrument</button>*/}
-    //                     </form>
-
-    //                 </div>
-    //             </div>
-    //         </div>
-    //     );
-    // }
 
     private downloadRecording(key: string, record: string) {
         let element = document.createElement("a");
@@ -693,7 +636,6 @@ export interface IPlayerPageComponentProps {
 
 // State variables
 export interface IPlayerPageComponentState {
-    // noteState: ITotalNoteState;
     soundOption: string;
     drawPending: boolean;
 }
