@@ -52,17 +52,33 @@ export class NoteKeyboardManager extends EventEmitter {
 
     public attachListeners() {
         document.addEventListener("keydown", (e: KeyboardEvent) => {
-            let k = e.key.toLowerCase();
+            let k = this.toLowerCase(e.key);
             if (this.addDownKey(k) || k === 'shift') {
                 this.emit(NoteKeyboardManager.KEY_START, k);
             }
         });
 
         document.addEventListener("keyup", (e: KeyboardEvent) => {
-            let k = e.key.toLowerCase();
+            let k = this.toLowerCase(e.key);
             this.removeDownKey(k);
             this.emit(NoteKeyboardManager.KEY_END, k);
         });
+    }
+
+    public toLowerCase(k: string) {
+        if (k === ':') {
+            return ';';
+        }
+        if (k === '<') {
+            return ',';
+        }
+        if (k === '>') {
+            return '.';
+        }
+        if (k === '{') {
+            return '[';
+        }
+        return k.toLowerCase();
     }
 }
 
