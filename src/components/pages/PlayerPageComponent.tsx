@@ -55,9 +55,9 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
 
     public static readonly pianoInstrOptions = [
         {label: "acoustic_grand_piano", name: "Piano"},
-        {label: "acoustic_bass", name: "Bass"},
-        {label: "acoustic_guitar_nylon", name: "Guitar"},
-        {label: "alto_sax", name: "Alto Sax"},
+        //{label: "acoustic_bass", name: "Bass"},
+        //{label: "acoustic_guitar_nylon", name: "Guitar"},
+        //{label: "alto_sax", name: "Alto Sax"},
         {label: "clarinet", name: "Clarinet"},
         {label: "flute", name: "Flute"},
         {label: "cello", name: "Cello"},
