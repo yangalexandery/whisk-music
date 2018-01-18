@@ -46,6 +46,8 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
     instr: any;
     metronome: Metronome;
     metronomeInstr: any;
+    bpm: number;
+    precision: number = 2;
     framesSinceMetronomePlayed: number;
     ac: AudioContext
     keyToNotes: {[key: string]: any[]};
@@ -123,7 +125,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                 }
                 this.keyToNotes[k].push(this.instr.play(NoteMap[k]));
                 if (this.recordingTime) {
-                    this.record = this.record + 'Play ' + k + ' ' + NoteMap[k] + ' ' + (new Date().getTime() - this.recordingTime) + ' ' + this.state.soundOption + ';';
+                    this.record = this.record + 'Play ' + k + ' ' + NoteMap[k] + ' ' + (this.roundToBeat(this.bpm, new Date().getTime() - this.recordingTime)) + ' ' + this.state.soundOption + ';';
                 }
             } else {
 
@@ -139,7 +141,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                         this.keyToNotes[k].push(helper.playNote(this.keyMapping[k], true, 100000));
                     });
                     if (this.recordingTime) {
-                        this.record = this.record + 'Play ' + k + ' ' + NoteMap[k] + ' ' + (new Date().getTime() - this.recordingTime) + ' ' + this.state.soundOption + ';';
+                        this.record = this.record + 'Play ' + k + ' ' + NoteMap[k] + ' ' + (this.roundToBeat(this.bpm, new Date().getTime() - this.recordingTime)) + ' ' + this.state.soundOption + ';';
                     }
                 }
             } 
@@ -149,6 +151,8 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                 this.recordingKey = k;
                 this.recordingTime = new Date().getTime();
                 this.downKey(' ');
+                this.metronome.mute = true;
+                this.metronome.mute = false;
             }
 
             if (k in this.playMapping) {
@@ -182,7 +186,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                 });
                 this.keyToNotes[k] = [];
                 if (this.recordingTime) {
-                    this.record = this.record + 'Release ' + k + ' ' + NoteMap[k] + ' ' + (new Date().getTime() - this.recordingTime) + ' ' + this.state.soundOption + ';';
+                    this.record = this.record + 'Release ' + k + ' ' + NoteMap[k] + ' ' + (this.roundToBeat(this.bpm, new Date().getTime() - this.recordingTime)) + ' ' + this.state.soundOption + ';';
                 }
             } else {
                 if (k in this.keyMapping) {
@@ -196,7 +200,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                     });
                     this.keyToNotes[k] = [];
                     if (this.recordingTime) {
-                        this.record = this.record + 'Release ' + k + ' ' + NoteMap[k] + ' ' + (new Date().getTime() - this.recordingTime) + ' ' + this.state.soundOption + ';';
+                        this.record = this.record + 'Release ' + k + ' ' + NoteMap[k] + ' ' + (this.roundToBeat(this.bpm, new Date().getTime() - this.recordingTime)) + ' ' + this.state.soundOption + ';';
                     }
                 }
             }
@@ -208,9 +212,11 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                     // console.log(this.recordings[49]);
                     // console.log("Play record from key " + this.recordingKey);
                     // this.playRecord(this.recordings[this.recordingKey.charCodeAt(0)]);
+                    this.downloadRecording(this.recordingKey, this.record);
                     this.record = '';
                     this.recordingKey = '';
                     this.recordingTime = 0;
+                    this.metronome.mute = true;
                 }
             }
         });
@@ -242,12 +248,19 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         });
         Soundfont.instrument(this.ac, "taiko_drum").then(this.bindMetronome.bind(this));
         this.screenModel = new ScreenModel(750, this.metronome);
+        this.bpm = this.screenModel.bpm;
     }
 
     private bindInstrument(instr: any) {
         this.instr = instr;
 
         Soundfont.instrument(this.ac, this.state.soundOption).then(this.bindPianoInstrument.bind(this));//function (clavinet) {
+    }
+
+    private roundToBeat(bpm: number, time: number) {
+        let msPerBeat = 60 * 1000 / bpm / this.precision;
+        let numBeats = Math.round(time / msPerBeat);
+        return numBeats * msPerBeat;
     }
 
     bindPianoInstrument(instr: any) {
@@ -306,7 +319,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
 
     render() {
         let SoundOptions = this.SoundOptions.bind(this);
-        let RecordButton = this.RecordButton.bind(this);
+        // let RecordButton = this.RecordButton.bind(this);
         let FileSelector = this.FileSelector.bind(this);
         return (
             <div style={[
@@ -314,7 +327,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                 PlayerPageComponent.styles.flex
             ]}>
                 <div style={{ width: "95%", height: "95%", display: "flex" }}>
-                    <div style={{ width: "15%", height: "95%", float: "left"}}>
+                    <div style={{ width: "17%", height: "95%", float: "left"}}>
                         <div style={{borderRight: "2px solid black", height: "100%", display: "flex" }}>
                             <div style={[OpenSansFont, { paddingTop: "2em", flexGrow: "1", height: "100%", float: "left"}]}>
                                 <Stopwatch />
@@ -484,34 +497,22 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         );
     }
 
-
-    private handleRecording() {
-        if (this.recordingTime) {
-
-            // Download the recording
-            let element = document.createElement("a");
-            let file = new Blob([this.record], { type: 'text/plain' });
-            element.href = URL.createObjectURL(file);
-            element.download = "recording.txt";
-            element.click();
-
-            this.recordingTime = 0;
-            this.record = '';
-
-        } else {
-            // Start recording
-            this.recordingTime = new Date().getTime();
-        }
+    private downloadRecording(key: string, record: string) {
+        let element = document.createElement("a");
+        let file = new Blob([record], { type: 'text/plain' });
+        element.href = URL.createObjectURL(file);
+        element.download = key + "-recording.txt";
+        element.click();
     }
 
-    // Button to record compositions
+    /*// Button to record compositions
     private RecordButton() {
         return (
             <div>
                 <button onClick={() => this.handleRecording()}>{this.recordingTime ? 'Stop Recording' : 'Start Recording'}</button>
             </div>
         );
-    }
+    }*/
 
     private handleChange(selectorFiles: FileList) {
         // console.log(selectorFiles[0]);
