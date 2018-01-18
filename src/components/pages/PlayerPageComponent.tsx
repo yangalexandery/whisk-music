@@ -36,6 +36,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
     recordingKey: string;
     recordMapping: {[key: string]: string};
     playMapping: {[key: string]: string};
+    curKeys: {[key: string]: number};
     recordings: Array<string>;
     exampleRecord: string;
     screen: Screen;
@@ -55,9 +56,9 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
 
     public static readonly pianoInstrOptions = [
         {label: "acoustic_grand_piano", name: "Piano"},
-        {label: "acoustic_bass", name: "Bass"},
-        {label: "acoustic_guitar_nylon", name: "Guitar"},
-        {label: "alto_sax", name: "Alto Sax"},
+        //{label: "acoustic_bass", name: "Bass"},
+        //{label: "acoustic_guitar_nylon", name: "Guitar"},
+        //{label: "alto_sax", name: "Alto Sax"},
         {label: "clarinet", name: "Clarinet"},
         {label: "flute", name: "Flute"},
         {label: "cello", name: "Cello"},
@@ -84,6 +85,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         this.recordMapping = {};
         this.playMapping = {};
         this.charToKey = {};
+        this.curKeys = {};
 
         let starterNotes = getStarterNotes();
         this.audioOutputHelper = AudioOutputHelper.getInstance(starterNotes);
@@ -125,7 +127,9 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                 console.log(this.getNoteToPlay(k));
                 this.keyToNotes[k].push(this.instr.play(this.getNoteToPlay(k)));
                 if (this.recordingTime) {
-                    this.record = this.record + 'Play ' + k + ' ' + NoteMap[k] + ' ' + (this.roundToBeat(this.bpm, new Date().getTime() - this.recordingTime)) + ' ' + this.state.soundOption + ';';
+                    let curTime = new Date().getTime();
+                    this.record = this.record + 'Play ' + k + ' ' + NoteMap[k] + ' ' + (this.roundToBeat(this.bpm, curTime - this.recordingTime)) + ' ' + this.state.soundOption + ';';
+                    this.curKeys[k] = curTime;
                 }
             } else {
 
@@ -141,7 +145,9 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                         this.keyToNotes[k].push(helper.playNote(this.keyMapping[k], true, 100000));
                     });
                     if (this.recordingTime) {
-                        this.record = this.record + 'Play ' + k + ' ' + NoteMap[k] + ' ' + (this.roundToBeat(this.bpm, new Date().getTime() - this.recordingTime)) + ' ' + this.state.soundOption + ';';
+                        let curTime = new Date().getTime();
+                        this.record = this.record + 'Play ' + k + ' ' + NoteMap[k] + ' ' + (this.roundToBeat(this.bpm, curTime - this.recordingTime)) + ' ' + this.state.soundOption + ';';
+                        this.curKeys[k] = curTime;
                     }
                 }
             } 
@@ -190,7 +196,9 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                 });
                 this.keyToNotes[k] = [];
                 if (this.recordingTime) {
-                    this.record = this.record + 'Release ' + k + ' ' + NoteMap[k] + ' ' + (this.roundToBeat(this.bpm, new Date().getTime() - this.recordingTime)) + ' ' + this.state.soundOption + ';';
+                    let curTime = new Date().getTime();
+                    this.record = this.record + 'Release ' + k + ' ' + NoteMap[k] + ' ' + ((this.roundToBeat(this.bpm, this.curKeys[k] - this.recordingTime)) + curTime - this.curKeys[k]) + ' ' + this.state.soundOption + ';';
+                    this.curKeys[k] = 0;
                 }
             } else {
                 if (k in this.keyMapping) {
@@ -204,7 +212,9 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                     });
                     this.keyToNotes[k] = [];
                     if (this.recordingTime) {
-                        this.record = this.record + 'Release ' + k + ' ' + NoteMap[k] + ' ' + (this.roundToBeat(this.bpm, new Date().getTime() - this.recordingTime)) + ' ' + this.state.soundOption + ';';
+                        let curTime = new Date().getTime();
+                        this.record = this.record + 'Release ' + k + ' ' + NoteMap[k] + ' ' + ((this.roundToBeat(this.bpm, this.curKeys[k] - this.recordingTime)) + curTime - this.curKeys[k]) + ' ' + this.state.soundOption + ';';
+                        this.curKeys[k] = 0;
                     }
                 }
             }
