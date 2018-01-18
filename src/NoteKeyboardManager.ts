@@ -53,7 +53,7 @@ export class NoteKeyboardManager extends EventEmitter {
     public attachListeners() {
         document.addEventListener("keydown", (e: KeyboardEvent) => {
             let k = e.key.toLowerCase();
-            if (this.addDownKey(k)) {
+            if (this.addDownKey(k) || k === 'shift') {
                 this.emit(NoteKeyboardManager.KEY_START, k);
             }
         });

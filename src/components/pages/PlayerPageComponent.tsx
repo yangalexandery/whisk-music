@@ -50,6 +50,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
     keyToNotes: {[key: string]: any[]};
 
     soundOptionComponent: InstrumentOption;
+    octaveUp: boolean;
 
 
     public static readonly pianoInstrOptions = [
@@ -109,6 +110,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         this.recordings = new Array(256);
         this.noteKeyboardManager = new NoteKeyboardManager(this);
         this.noteKeyboardManager.attachListeners();
+        this.octaveUp = false;
 
         // Keyboard listener to play sounds
         // TODO: REFACTOR THIS PART
@@ -120,7 +122,8 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                 if(!this.keyToNotes[k]) {
                     this.keyToNotes[k] = [];
                 }
-                this.keyToNotes[k].push(this.instr.play(NoteMap[k]));
+                console.log(this.getNoteToPlay(k));
+                this.keyToNotes[k].push(this.instr.play(this.getNoteToPlay(k)));
                 if (this.recordingTime) {
                     this.record = this.record + 'Play ' + k + ' ' + NoteMap[k] + ' ' + (this.roundToBeat(this.bpm, new Date().getTime() - this.recordingTime)) + ' ' + this.state.soundOption + ';';
                 }
@@ -160,6 +163,10 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
 
             if (k === 'm') {
                 this.metronome.mute = !this.metronome.mute;
+            }
+            console.log(k);
+            if (k === 'shift') {
+                this.octaveUp = true;
             }
 
             /*if (k === ' ') {
@@ -216,6 +223,9 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                     this.metronome.mute = true;
                 }
             }
+            if (k === 'shift') {
+                this.octaveUp = false;
+            }
         });
 
         // Run if state changed
@@ -266,6 +276,14 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
 
     bindMetronome(instr: any) {
         this.metronomeInstr = instr;
+    }
+
+    private getNoteToPlay(k: string) {
+        if (this.octaveUp) {
+            console.log(NoteMap[k].substring(0, NoteMap[k].length - 1) + (parseInt(NoteMap[k].substring(NoteMap[k].length - 1)) + 1).toString());
+            return NoteMap[k].substring(0, NoteMap[k].length - 1) + (parseInt(NoteMap[k].substring(NoteMap[k].length - 1)) + 1).toString();
+        }
+        return NoteMap[k];
     }
 
     private downKey(k: string) {
