@@ -1,6 +1,8 @@
 import * as React from "react";
 import * as Radium from "radium";
 
+import { SidePanel } from "./SidePanel";
+
 @Radium
 export class NiceButton extends React.Component<INiceButtonProps, INiceButtonState> {
     props: INiceButtonProps;
@@ -11,7 +13,8 @@ export class NiceButton extends React.Component<INiceButtonProps, INiceButtonSta
     	super(props);
 
     	this.state = {
-    		hover: false
+    		hover: false,
+            arrowDirectionLeft: props.arrowDirectionLeft
     	};
     }
 
@@ -20,14 +23,27 @@ export class NiceButton extends React.Component<INiceButtonProps, INiceButtonSta
     		<div style={[
     			NiceButton.styles.base,
     			NiceButton.styles.hoverState(this.state.hover)
-    		]} onMouseEnter={this.toggleHover.bind(this)} onMouseLeave={this.toggleHover.bind(this)}>
-    		{"<"}
+    		]} onMouseEnter={this.toggleHover.bind(this)} onMouseLeave={this.toggleHover.bind(this)}
+            onClick={this.onClick.bind(this)}>
+    		    {this.arrow()}
     		</div>
     	);
     }
 
+    private arrow() {
+        if (this.state.arrowDirectionLeft) {
+            return "<";
+        }
+        return ">";
+    }
+
     private toggleHover() {
     	this.setState({hover: !this.state.hover});
+    }
+
+    private onClick() {
+        this.setState({arrowDirectionLeft: !this.state.arrowDirectionLeft});
+        this.props.parent.toggleCollapse();
     }
 
     private static styles = {
@@ -56,10 +72,12 @@ export class NiceButton extends React.Component<INiceButtonProps, INiceButtonSta
 
 
 export interface INiceButtonProps {
-
+    arrowDirectionLeft: boolean;
+    parent: SidePanel;
 }
 
 
 export interface INiceButtonState {
 	hover: boolean;
+    arrowDirectionLeft: boolean;
 }
