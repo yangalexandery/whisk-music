@@ -53,6 +53,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
     keyToNotes: {[key: string]: any[]};
 
     soundOptionComponent: InstrumentOption;
+    octave: number;
     octaveUp: boolean;
 
 
@@ -109,6 +110,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         this.noteKeyboardManager = new NoteKeyboardManager(this);
         this.noteKeyboardManager.attachListeners();
         this.octaveUp = false;
+        this.octave = 3;
 
         // Keyboard listener to play sounds
         // TODO: REFACTOR THIS PART
@@ -269,10 +271,10 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
 
     private getNoteToPlay(k: string) {
         if (this.octaveUp) {
-            console.log(NoteMap[k].substring(0, NoteMap[k].length - 1) + (parseInt(NoteMap[k].substring(NoteMap[k].length - 1)) + 1).toString());
-            return NoteMap[k].substring(0, NoteMap[k].length - 1) + (parseInt(NoteMap[k].substring(NoteMap[k].length - 1)) + 1).toString();
+            // console.log(NoteMap[k].note + (NoteMap[k].octave + 1).toString());
+            return NoteMap[k].note + (NoteMap[k].octave + this.octave + 1).toString();
         }
-        return NoteMap[k];
+        return NoteMap[k].note + (NoteMap[k].octave + this.octave).toString();
     }
 
     private downKey(k: string) {

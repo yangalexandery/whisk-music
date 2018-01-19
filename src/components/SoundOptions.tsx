@@ -3,6 +3,8 @@ import * as Radium from "radium";
 
 import { PlayerPageComponent } from "./pages/PlayerPageComponent";
 import { InstrumentOption } from "./InstrumentOption";
+import { OpenSansFont } from "../styles/GlobalStyles";
+
 
 @Radium
 export class SoundOptions extends React.Component<ISoundOptionsProps, ISoundOptionsState> {
@@ -16,7 +18,8 @@ export class SoundOptions extends React.Component<ISoundOptionsProps, ISoundOpti
 
     render() {
     	return (
-            <div className="container">
+            <div className="container" style={{fontSize: "16px"}}>
+                {"Change Instrument"}
                 <div className="row">
                     <div className="col-sm-12">
 
