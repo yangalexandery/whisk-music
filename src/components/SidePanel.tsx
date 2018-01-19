@@ -7,6 +7,7 @@ import { OpenSansFont } from "../styles/GlobalStyles";
 import { SoundOptions } from "./SoundOptions";
 import { NiceButton } from "./NiceButton";
 import { OctaveAdjuster } from "./OctaveAdjuster";
+import { BPMAdjuster } from "./BPMAdjuster";
 
 @Radium
 export class SidePanel extends React.Component<ISidePanelProps, ISidePanelState> {
@@ -48,7 +49,18 @@ export class SidePanel extends React.Component<ISidePanelProps, ISidePanelState>
                         <FileSelector />*/}
                         <DownloadButton />
                         {/*<FileSelector />*/}
+                        <br/>
+                        <div style={{fontSize: "16px", marginBottom: "5px"}}>
+                            {"Adjust Keyboard Range"}
+                        </div>
+                        <br/>
                         <OctaveAdjuster parent={this.props.parent} />
+                        <br/>
+                        <div style={{fontSize: "16px", marginBottom: "5px"}}>
+                            {"Adjust Metronome BPM"}
+                        </div>
+                        <br/>
+                        <BPMAdjuster parent={this.props.parent.screenModel} />
                     </div>
                     <div style={[
                         SidePanel.styles.flex,

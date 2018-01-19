@@ -40,6 +40,11 @@ export class ScreenModel {
         }
     }
 
+    setBPM(newBPM: number) {
+        this.bpm = newBPM;
+        this.pixelsPerSecond = this.intervalBetweenTicks * this.bpm / 60.0;
+    }
+
     update(deltaTime: number) {
         let maxPos = this.width / 2.0;
 
@@ -52,7 +57,7 @@ export class ScreenModel {
         for (let tick of this.systemTicks) {
             if (!tick.isMiddle) {
                 tick.pos -= this.pixelsPerSecond * deltaTime / 1000.0;
-                if (this.width / 2.0 - 6 < tick.pos && tick.pos < this.width / 2.0 + 1) {
+                if (this.width / 2.0 - 3 < tick.pos && tick.pos < this.width / 2.0 + 1) {
                     this.metronome.emit(Metronome.BEAT_START, "");
                 }
             }
