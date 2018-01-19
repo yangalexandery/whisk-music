@@ -138,9 +138,9 @@ export class SidePanel extends React.Component<ISidePanelProps, ISidePanelState>
         border: (leftPanel: boolean, collapse: boolean) => {
             if (collapse) {return {};}
             if (leftPanel) {
-                return {borderRight: "2px solid black"};
+                return {borderRight: "0px solid black"};
             }
-            return {borderLeft: "2px solid black"};
+            return {borderLeft: "0px solid black"};
         },
         collapsed: (collapse: boolean) => {
             if (collapse) {

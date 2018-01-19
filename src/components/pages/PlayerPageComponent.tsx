@@ -31,20 +31,23 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
     rafId: any;
     time: number;
     synth: Tone.Synth;
+
+    // Variables relating to recording and playing
     record: string;
     recordingTime: number;
     recordingKey: string;
-    playMapping: {[key: string]: string};
+    playMapping: {[key: string]: boolean};
     curKeys: {[key: string]: number};
     recordings: {[key: string]: string};
-    exampleRecord: string;
+
+    // Variables relating to screen and metronome
     screen: Screen;
     screenModel: ScreenModel;
     instr: any;
     metronome: Metronome;
     metronomeInstr: any;
     bpm: number;
-    precision: number = 2;
+    precision: number = 4;
     framesSinceMetronomePlayed: number;
     ac: AudioContext
     keyToNotes: {[key: string]: any[]};
@@ -83,9 +86,9 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         // Initialization of class variables
         this.keyMapping = {};
         this.playMapping = {
-            '2': '',
-            '4': '',
-            '6': ''
+            '2': false,
+            '4': false,
+            '6': false
         };
         this.charToKey = {};
         this.curKeys = {};
@@ -148,7 +151,6 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
             } 
 
             if (k in this.recordings) {
-                // console.log("Recording from key " + k);
                 this.recordingKey = k;
                 this.recordingTime = new Date().getTime();
                 this.downKey(' ');
@@ -157,7 +159,6 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
             }
 
             if (k in this.playMapping) {
-                // console.log("Play recording from key " + k);
                 var toPlay = this.recordings[String.fromCharCode(k.charCodeAt(0) - 1)];
                 this.playRecord(toPlay);
             }
@@ -169,15 +170,6 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
             if (k === 'shift') {
                 this.octaveUp = true;
             }
-
-            /*if (k === ' ') {
-                console.log("Stop recording from key " + this.recordingKey);
-                this.recordings[this.recordingKey.charCodeAt(0)] = this.record;
-                // console.log(this.recordings[49]);
-                this.playRecord(this.recordings[this.recordingKey.charCodeAt(0)]);
-                this.record = '';
-                this.recordingKey = '';
-            }*/
         });
 
         // Keyboard listener to end sounds
@@ -235,16 +227,8 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
             }
         });
 
-        // Run if state changed
-        // this.noteKeyboardManager.on(NoteKeyboardManager.STATE_CHANGED, (state: ITotalNoteState) => {
-            // console.log("hmmmmm");
-            // this.setState({
-            //     noteState: state
-            // });
-        // });
 
         // Initialize instrument
-        // TODO: Have multiple instruments that can be played at the same time
         this.raf();
         this.ac = new AudioContext();
 
