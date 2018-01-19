@@ -15,6 +15,8 @@ export class OctaveAdjuster extends React.Component<IOctaveAdjusterProps, IOctav
 
     	this.state = {
     		octave: this.props.parent.octave,
+            leftHover: false,
+            rightHover: false,
             // arrowDirectionLeft: props.arrowDirectionLeft
     	};
     }
@@ -28,9 +30,11 @@ export class OctaveAdjuster extends React.Component<IOctaveAdjusterProps, IOctav
                 <div style={[
                     OctaveAdjuster.styles.arrow,
                     OctaveAdjuster.styles.flex,
+                    OctaveAdjuster.styles.hoverState(this.state.leftHover),
                     Unselectable
                     // {borderRight: "1px solid black"}
-                ]}>
+                ]} onMouseEnter={this.toggleLeftHover.bind(this)} onMouseLeave={this.toggleLeftHover.bind(this)}
+                onClick={this.decrementOctave.bind(this)}>
                     {"<"}
                 </div>
                 <div style={[
@@ -43,22 +47,38 @@ export class OctaveAdjuster extends React.Component<IOctaveAdjusterProps, IOctav
                 <div style={[
                     OctaveAdjuster.styles.arrow,
                     OctaveAdjuster.styles.flex,
+                    OctaveAdjuster.styles.hoverState(this.state.rightHover),
                     Unselectable
                     // {borderLeft: "1px solid black"}
-                ]}>
+                ]} onMouseEnter={this.toggleRightHover.bind(this)} onMouseLeave={this.toggleRightHover.bind(this)}
+                onClick={this.incrementOctave.bind(this)}>
                     {">"}
                 </div>                
     		</div>
     	);
     }
 
-    private arrow() {
-        // if (this.state.arrowDirectionLeft) {
-        //     return "<";
-        // }
-        return ">";
+    private toggleLeftHover() {
+        this.setState({leftHover: !this.state.leftHover});
     }
 
+    private toggleRightHover() {
+        this.setState({rightHover: !this.state.rightHover});
+    }
+
+    private decrementOctave() {
+        if (this.state.octave > 0) {
+            this.props.parent.octave--;
+            this.setState({octave: this.state.octave - 1});
+        }
+    }
+
+    private incrementOctave() {
+        if (this.state.octave < 5) {
+            this.props.parent.octave++;
+            this.setState({octave: this.state.octave + 1});
+        }
+    }
     // private toggleHover() {
     // 	this.setState({hover: !this.state.hover});
     // }
@@ -110,4 +130,6 @@ export interface IOctaveAdjusterProps {
 
 export interface IOctaveAdjusterState {
     octave: number;
+    leftHover: boolean;
+    rightHover: boolean;
 }
