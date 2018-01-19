@@ -2,6 +2,7 @@ import * as React from "react";
 import * as Radium from "radium";
 
 import { SidePanel } from "./SidePanel";
+import { Unselectable } from "../styles/GlobalStyles";
 
 @Radium
 export class NiceButton extends React.Component<INiceButtonProps, INiceButtonState> {
@@ -22,7 +23,8 @@ export class NiceButton extends React.Component<INiceButtonProps, INiceButtonSta
     	return (
     		<div style={[
     			NiceButton.styles.base,
-    			NiceButton.styles.hoverState(this.state.hover)
+    			NiceButton.styles.hoverState(this.state.hover),
+                Unselectable
     		]} onMouseEnter={this.toggleHover.bind(this)} onMouseLeave={this.toggleHover.bind(this)}
             onClick={this.onClick.bind(this)}>
     		    {this.arrow()}

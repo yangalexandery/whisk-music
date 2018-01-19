@@ -6,6 +6,7 @@ import { Stopwatch } from "./pages/Stopwatch";
 import { OpenSansFont } from "../styles/GlobalStyles";
 import { SoundOptions } from "./SoundOptions";
 import { NiceButton } from "./NiceButton";
+import { OctaveAdjuster } from "./OctaveAdjuster";
 
 @Radium
 export class SidePanel extends React.Component<ISidePanelProps, ISidePanelState> {
@@ -47,6 +48,7 @@ export class SidePanel extends React.Component<ISidePanelProps, ISidePanelState>
                         <FileSelector />*/}
                         <DownloadButton />
                         {/*<FileSelector />*/}
+                        <OctaveAdjuster parent={this.props.parent} />
                     </div>
                     <div style={[
                         SidePanel.styles.flex,
@@ -73,17 +75,7 @@ export class SidePanel extends React.Component<ISidePanelProps, ISidePanelState>
                         { paddingTop: "2em", flexGrow: "1", height: "100%", float: "right"},
                         SidePanel.styles.collapsed(this.state.collapsed)
                     ]}>
-                        <Stopwatch />
-                        <br/>
-                        <SoundOptions parent={this.props.parent}/>
-                        {/*<br/> <br/>
-                        <h1 style={{fontSize: '1.2em'}}>Play or Load Recording</h1>
-                        <br/>
-                        <RecordButton /> 
-                        <br/>
-                        <FileSelector />*/}
-                        <DownloadButton />
-                        {/*<FileSelector />*/}
+
                     </div>
                 </div>
             );                    

@@ -115,3 +115,12 @@ export const BoxShadow = {
 };
 
 export const AccentColor = "rgb(79, 79, 79)";
+
+export const Unselectable = {
+    MozUserSelect: "none",
+    WebkitUserSelect: "none",
+    WebkitTouchCallout: "none",
+    userSelect: "none",
+    khtmlUserSelect: "none",
+    msUserSelect: "none",
+};
