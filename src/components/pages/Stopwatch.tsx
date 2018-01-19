@@ -23,6 +23,7 @@ export class Stopwatch extends React.Component {
       lastClearedIncrementer: null
     };
     this.incrementer = null;
+    this.handleStartClick();
   }  
     
   handleStartClick() {
