@@ -22,6 +22,9 @@ export class SidePanel extends React.Component<ISidePanelProps, ISidePanelState>
     }
 
     render() {
+        var DownloadButton = this.DownloadButton.bind(this);
+        var FileSelector = this.FileSelector.bind(this);
+
         if (this.props.leftPanel) {
             return (
                 <div style={[
@@ -42,6 +45,8 @@ export class SidePanel extends React.Component<ISidePanelProps, ISidePanelState>
                         <RecordButton /> 
                         <br/>
                         <FileSelector />*/}
+                        <DownloadButton />
+                        {/*<FileSelector />*/}
                     </div>
                     <div style={[
                         SidePanel.styles.flex,
@@ -77,6 +82,8 @@ export class SidePanel extends React.Component<ISidePanelProps, ISidePanelState>
                         <RecordButton /> 
                         <br/>
                         <FileSelector />*/}
+                        <DownloadButton />
+                        {/*<FileSelector />*/}
                     </div>
                 </div>
             );                    
@@ -86,6 +93,36 @@ export class SidePanel extends React.Component<ISidePanelProps, ISidePanelState>
     toggleCollapse() {
         this.setState({collapsed: !this.state.collapsed});
     }
+
+    private DownloadButton() {
+        return (
+            <div>
+                <br/>
+                <br/>
+                <button onClick={() => this.props.parent.downloadRecordings()}>Download Recordings</button>
+            </div>
+        );
+    }
+
+    private handleChange(selectorFiles: FileList) {
+        // console.log(selectorFiles[0]);
+        let reader = new FileReader();
+        reader.onload = function(){
+            // console.log(reader.result);
+            this.props.parent.playRecord(reader.result);
+
+        }.bind(this);
+        reader.readAsText(selectorFiles[0]);
+    }
+
+    private FileSelector() {
+        return (
+            <div>
+                <input type="file" onChange={ (e) => this.handleChange.bind(this, e.target.files) } />
+            </div>
+        );
+    }
+
 
     private static styles = {
     	base: {

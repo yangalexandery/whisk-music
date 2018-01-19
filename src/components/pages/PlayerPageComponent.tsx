@@ -34,10 +34,9 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
     record: string;
     recordingTime: number;
     recordingKey: string;
-    recordMapping: {[key: string]: string};
     playMapping: {[key: string]: string};
     curKeys: {[key: string]: number};
-    recordings: Array<string>;
+    recordings: {[key: string]: string};
     exampleRecord: string;
     screen: Screen;
     screenModel: ScreenModel;
@@ -82,8 +81,11 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
 
         // Initialization of class variables
         this.keyMapping = {};
-        this.recordMapping = {};
-        this.playMapping = {};
+        this.playMapping = {
+            '2': '',
+            '4': '',
+            '6': ''
+        };
         this.charToKey = {};
         this.curKeys = {};
 
@@ -93,23 +95,14 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         this.keyMapping["x"] = starterNotes[1];
         this.keyMapping["c"] = starterNotes[2];
 
-        // Hardcode in record strings
-        this.recordMapping["1"] = 'good';
-        // this.recordMapping["2"] = 'good';
-        this.recordMapping["3"] = 'good';
-        // this.recordMapping["4"] = 'good';
-        this.recordMapping["5"] = 'good';
-        // this.recordMapping["6"] = 'good';
-
-        this.playMapping["2"] = 'good';
-        this.playMapping["4"] = 'good';
-        this.playMapping["6"] = 'good';
-
-
         this.keyToNotes = {};
         this.recordingKey = '';
         this.record = '';
-        this.recordings = new Array(256);
+        this.recordings = {
+            '1': '',
+            '3': '',
+            '5': ''
+        };
         this.noteKeyboardManager = new NoteKeyboardManager(this);
         this.noteKeyboardManager.attachListeners();
         this.octaveUp = false;
@@ -152,7 +145,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                 }
             } 
 
-            if (k in this.recordMapping) {
+            if (k in this.recordings) {
                 // console.log("Recording from key " + k);
                 this.recordingKey = k;
                 this.recordingTime = new Date().getTime();
@@ -163,7 +156,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
 
             if (k in this.playMapping) {
                 // console.log("Play recording from key " + k);
-                var toPlay = this.recordings[k.charCodeAt(0) - 1];
+                var toPlay = this.recordings[String.fromCharCode(k.charCodeAt(0) - 1)];
                 this.playRecord(toPlay);
             }
 
@@ -221,12 +214,14 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
             if (k === ' ') {
                 if (!(this.recordingKey === '')) {
                     // console.log("Stop recording from key " + this.recordingKey);
-                    this.recordings[this.recordingKey.charCodeAt(0)] = this.record;
+                    this.recordings[this.recordingKey] = this.record;
                     // console.log("Putting into " + this.recordingKey + " this record: " + this.record);
                     // console.log(this.recordings[49]);
                     // console.log("Play record from key " + this.recordingKey);
                     // this.playRecord(this.recordings[this.recordingKey.charCodeAt(0)]);
-                    this.downloadRecording(this.recordingKey, this.record);
+                    
+                    // DO NOT AUTOMATICALLY DOWNLOAD RECORDING
+                    // this.downloadRecording(this.recordingKey, this.record);
                     this.record = '';
                     this.recordingKey = '';
                     this.recordingTime = 0;
@@ -327,7 +322,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
 
     // Plays a recording string
     // TODO: Play recording from an uploaded file
-    private playRecord(record: string) {
+    playRecord(record: string) {
         let lines = record.split(';');
         let currentTime: number = new Date().getTime();
         for (let i in lines) {
@@ -343,8 +338,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
     }
 
     render() {
-        // let RecordButton = this.RecordButton.bind(this);
-        let FileSelector = this.FileSelector.bind(this);
+
         return (
             <div style={[
                 PlayerPageComponent.styles.base,
@@ -471,7 +465,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         this.updateInstrument();
     }
 
-    private downloadRecording(key: string, record: string) {
+    downloadRecording(key: string, record: string) {
         let element = document.createElement("a");
         let file = new Blob([record], { type: 'text/plain' });
         element.href = URL.createObjectURL(file);
@@ -479,34 +473,13 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         element.click();
     }
 
-    /*// Button to record compositions
-    private RecordButton() {
-        return (
-            <div>
-                <button onClick={() => this.handleRecording()}>{this.recordingTime ? 'Stop Recording' : 'Start Recording'}</button>
-            </div>
-        );
-    }*/
-
-    private handleChange(selectorFiles: FileList) {
-        // console.log(selectorFiles[0]);
-        let reader = new FileReader();
-        reader.onload = function(){
-            // console.log(reader.result);
-            this.playRecord(reader.result);
-
-        }.bind(this);
-        reader.readAsText(selectorFiles[0]);
+    downloadRecordings() {
+        for (var i in this.recordings) {
+            this.downloadRecording(i, this.recordings[i]);
+        }
     }
 
-    private FileSelector() {
-        return (
-            <div>
-                <input type="file" onChange={ (e) => this.handleChange(e.target.files) } />
-            </div>
-        );
-    }
-
+    
     getTimeStamp() {
         return performance.now(); // let's just do this for now
         // return IS_IOS ? new Date().getTime() : performance.now();
