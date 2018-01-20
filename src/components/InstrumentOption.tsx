@@ -43,7 +43,7 @@ export class InstrumentOption extends React.Component<IInstrumentOptionProps, II
 
 	private static styles = {
         instrOption: {
-            height: "25px",
+            height: "20px",
             marginBottom: "5px",
             marginLeft: "10px",
             marginRight: "10px",

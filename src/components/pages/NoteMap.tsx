@@ -2,7 +2,7 @@ export const DEFAULT_SOUND_OPTION = 'Synth';
 
 // Hardcoded note map
 export const NoteMap = {
-	q: {note: "B" , octave: 0},
+	//q: {note: "B" , octave: 0},
 	a: {note: "C" , octave: 1},
     w: {note: "C#", octave: 1},
     s: {note: "D" , octave: 1}, 
