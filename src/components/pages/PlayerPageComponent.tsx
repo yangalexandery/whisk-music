@@ -15,6 +15,7 @@ import { NoteUIPositionList } from "../../models/NoteUIPositionList";
 import { NoteKeyboardManager } from "../../NoteKeyboardManager";
 import { Metronome } from "../Metronome";
 import { SidePanel } from "../SidePanel";
+import { OpenSansFont } from "../../styles/GlobalStyles";
 
 @Radium
 export class PlayerPageComponent extends React.Component<IPlayerPageComponentProps, IPlayerPageComponentState> {
@@ -352,7 +353,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                         <SidePanel parent={this} leftPanel={true} />
                     </div>
                     <div style={{ width: "80%" }}>
-                        <div style={[PlayerPageComponent.styles.textOverlay]}>
+                        <div style={[OpenSansFont, PlayerPageComponent.styles.textOverlay]}>
                             {this.state.overlayMessage}
                         </div>
                         <div style={[
@@ -590,7 +591,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         screenContainer: {
             width: "750px",
             height: "25px",
-            backgroundColor: "gray",
+            // backgroundColor: "gray",
             marginTop: "4em"
         },
         buttonContainer: {
@@ -648,8 +649,8 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
             alignItems: "center",
             alignContent: "center",
             color: "black",
-            fontSize: "15px",
-            fontFamily: "'Open Sans', sans-serif",
+            fontSize: "1em",
+            // fontFamily: "'Open Sans', sans-serif",
             backgroundColor: "rgba(0, 255, 0, 0.2)",
             borderRadius: "15px"
         }

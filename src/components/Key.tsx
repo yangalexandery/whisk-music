@@ -22,7 +22,20 @@ export class Key extends React.Component<IKeyProps, IKeyState> {
                 Key.styles.downState(this.state.down)
                 // Key.styles.dummyState(this.props.isDummy)
             ]}>
-                {this.props.notePosition.keyboardCharacter}
+                <div style={[
+                    OpenSansFont,
+                    Key.styles.middle,
+                    Key.styles.spaceMiddle(this.props.isSpace),
+                    Key.styles.adjustFont(this.props.notePosition.content, this.props.isSpace)
+                ]}>
+                    {this.props.notePosition.content}
+                </div>
+                <div style={[
+                    OpenSansFont,
+                    Key.styles.corner
+                ]}>
+                    {this.props.notePosition.keyContent}
+                </div>
             </div>
         );
     }
@@ -41,12 +54,34 @@ export class Key extends React.Component<IKeyProps, IKeyState> {
             color: "black",
             marginLeft: "10px",
             marginRight: "10px",
+            // display: "flex",
+            // alignItems: "center",
+            // justifyContent: "center",
+            fontSize: "1em",
+            borderRadius: "4px",
+            border: "1px solid black"
+        },
+        middle: {
+            width: `${Key.WIDTH - 20}px`,
+            height: `${Key.HEIGHT - 20}px`,
+            marginLeft: "10px",
+            marginRight: "10px",
+            marginTop: "10px",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             fontSize: "1em",
-            borderRadius: "4px",
-            border: "1px solid black"
+        },
+        corner: {
+            float: "right",
+            width: "100%",
+            height: "10px",
+            fontSize: "0.5em",
+            // display: "flex",
+            // alignItems: "center",
+            // justifyContent: "left",
+            textAlign: "right",
+            paddingRight: "4px",
         },
         setColor: (color: string) => {
             return {
@@ -62,6 +97,13 @@ export class Key extends React.Component<IKeyProps, IKeyState> {
 
             return {};
         },
+        spaceMiddle: (isSpace: boolean) => {
+            if (isSpace) {
+                return {
+                    width: `${Key.SPACEWIDTH - 20}px`
+                }
+            }
+        },
         downState: (isDown: number) => {
             if (isDown) {
                 return {
@@ -69,6 +111,14 @@ export class Key extends React.Component<IKeyProps, IKeyState> {
                 };
             }
 
+            return {};
+        },
+        adjustFont: (content: string, isSpace: boolean) => {
+            if (content.length > 2 && !isSpace) {
+                return {
+                    fontSize: "0.8em"
+                }
+            }
             return {};
         }
         // dummyState: (isDummy: boolean) => {

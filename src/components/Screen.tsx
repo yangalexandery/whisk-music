@@ -97,6 +97,7 @@ export class Screen extends React.Component<IScreenProps, IScreenState> {
         const ctx = this.canvas.getContext("2d");
         ctx.scale(1, 1);
 
+        ctx.strokeRect(0, 13, 750, 1);
         for (let tick of this.props.screenModel.playerTicks) {
             ctx.strokeStyle = tick.color;
             ctx.strokeRect(Math.round(tick.pos), 0, 1, 25);
@@ -112,6 +113,8 @@ export class Screen extends React.Component<IScreenProps, IScreenState> {
                 }
             }
         }
+        ctx.strokeRect(0, 6, 1, 15);
+        ctx.strokeRect(749, 6, 1, 15);
     }
 
     clearCanvas() {
@@ -166,8 +169,8 @@ export class Screen extends React.Component<IScreenProps, IScreenState> {
             alignItems: "center",
             justifyContent: "center",
             fontSize: "1em",
-            borderRadius: "2px",
-            border: "1px solid black"
+            // borderRadius: "2px",
+            // border: "1px solid black"
         },
     };
 }
