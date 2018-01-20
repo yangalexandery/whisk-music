@@ -19,7 +19,7 @@ export class SidePanel extends React.Component<ISidePanelProps, ISidePanelState>
     	super(props);
 
     	this.state = {
-    		collapsed: false,
+    		collapsed: true,
     	};
     }
 
@@ -68,7 +68,7 @@ export class SidePanel extends React.Component<ISidePanelProps, ISidePanelState>
                         SidePanel.styles.flex,
                         { width: "2.5em", height: "100%", float: "right"}
                     ]}>
-                        <NiceButton parent={this} arrowDirectionLeft={true}/>
+                        <NiceButton parent={this} arrowDirectionLeft={false}/>
                     </div>
                 </div>
             );
@@ -82,7 +82,7 @@ export class SidePanel extends React.Component<ISidePanelProps, ISidePanelState>
                         SidePanel.styles.flex,
                         { width: "2.5em", height: "100%", float: "left"}
                     ]}>
-                        <NiceButton parent={this} arrowDirectionLeft={false}/>
+                        <NiceButton parent={this} arrowDirectionLeft={true}/>
                     </div>
                     <div style={[
                         OpenSansFont, 
