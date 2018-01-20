@@ -357,7 +357,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                         ]}>
                             <div style={[
                                 PlayerPageComponent.styles.flex,
-                                PlayerPageComponent.styles.screenContainer
+                                PlayerPageComponent.styles.screenContainer,
                             ]}>
                                 <Screen ref={(screen) => {
                                     if (screen) {
@@ -586,7 +586,8 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         screenContainer: {
             width: "750px",
             height: "25px",
-            backgroundColor: "gray"
+            backgroundColor: "gray",
+            marginTop: "4em"
         },
         buttonContainer: {
             width: "100%"
@@ -637,7 +638,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
             //top: "50%",
             left: "26.8%",
             // marginTop: "1em",
-            marginTop: "1.5em",
+            marginTop: "3em",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
