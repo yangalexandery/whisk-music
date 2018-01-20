@@ -4,6 +4,7 @@ import * as Radium from "radium";
 import { PlayerPageComponent } from "./pages/PlayerPageComponent";
 import { InstrumentOption } from "./InstrumentOption";
 import { OpenSansFont } from "../styles/GlobalStyles";
+import { pianoInstrOptions } from "./pages/InstrumentOptions"
 
 
 @Radium
@@ -27,7 +28,7 @@ export class SoundOptions extends React.Component<ISoundOptionsProps, ISoundOpti
                         </div>
                         <br/>
                         {
-                            PlayerPageComponent.pianoInstrOptions.map((pianoInstrOption, i) => {
+                            pianoInstrOptions.map((pianoInstrOption, i) => {
                                 return <InstrumentOption key={i} value={pianoInstrOption.label} name={pianoInstrOption.name} pageOwner={this.props.parent}
                                         ref={(instrOption) => {
                                             if (instrOption && pianoInstrOption.label == this.props.parent.state.soundOption) {
