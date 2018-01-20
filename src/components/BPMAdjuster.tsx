@@ -74,7 +74,7 @@ export class BPMAdjuster extends React.Component<IBPMAdjusterProps, IBPMAdjuster
     }
 
     private incrementBPM() {
-        if (this.state.bpm < 160) {
+        if (this.state.bpm < 240) {
             this.props.parent.setBPM(this.state.bpm + 4);
             this.setState({bpm: this.state.bpm + 4});
         }

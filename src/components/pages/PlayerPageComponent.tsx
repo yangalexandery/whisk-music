@@ -33,6 +33,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
     synth: Tone.Synth;
 
     // Variables relating to recording and playing
+    noteSplitter: string = '~'
     record: string;
     recordingTime: number;
     recordingKey: string;
@@ -47,7 +48,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
     instr: any;
     metronome: Metronome;
     metronomeInstr: any;
-    precision: number = 4;
+    precision: number = 2;
     framesSinceMetronomePlayed: number;
     ac: AudioContext
     keyToNotes: {[key: string]: any[]};
@@ -109,17 +110,14 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                 if(!this.keyToNotes[k]) {
                     this.keyToNotes[k] = [];
                 }
-                //console.log(this.getNoteToPlay(k));
                 this.keyToNotes[k].push(this.instr.play(this.getNoteToPlay(k)));
                 if (this.recordingTime) {
                     let curTime = new Date().getTime();
-                    this.record = this.record + 'Play ' + k + ' ' + NoteMap[k].note + ' ' + (this.roundToBeat(this.screenModel.bpm, curTime - this.recordingTime)) + ' ' + this.state.soundOption + '~';
+                    this.record = this.record + 'Play ' + k + ' ' + NoteMap[k].note + ' ' + (this.roundToBeat(this.screenModel.bpm, curTime - this.recordingTime)) + ' ' + this.state.soundOption + this.noteSplitter;
                     this.curKeys[k] = curTime;
                 }
             } else {
-
                 // Z, X, C percussion keys
-
                 if (k in this.keyMapping) {
                     this.screenModel.addPlayerTick();
 
@@ -131,7 +129,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                     });
                     if (this.recordingTime) {
                         let curTime = new Date().getTime();
-                        this.record = this.record + 'Play ' + k + ' ' + NoteMap[k].note + ' ' + (this.roundToBeat(this.screenModel.bpm, curTime - this.recordingTime)) + ' ' + this.state.soundOption + '~';
+                        this.record = this.record + 'Play ' + k + ' ' + NoteMap[k].note + ' ' + (this.roundToBeat(this.screenModel.bpm, curTime - this.recordingTime)) + ' ' + this.state.soundOption + this.noteSplitter;
                         this.curKeys[k] = curTime;
                     }
                 }
@@ -157,7 +155,6 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
             if (k === 'm') {
                 this.metronome.mute = !this.metronome.mute;
             }
-            //console.log(k);
             if (k === 'shift') {
                 this.octaveUp = true;
             }
@@ -175,7 +172,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                 this.keyToNotes[k] = [];
                 if (this.recordingTime) {
                     let curTime = new Date().getTime();
-                    this.record = this.record + 'Release ' + k + ' ' + NoteMap[k].note + ' ' + ((this.roundToBeat(this.screenModel.bpm, this.curKeys[k] - this.recordingTime)) + curTime - this.curKeys[k]) + ' ' + this.state.soundOption + '~';
+                    this.record = this.record + 'Release ' + k + ' ' + NoteMap[k].note + ' ' + ((this.roundToBeat(this.screenModel.bpm, this.curKeys[k] - this.recordingTime)) + curTime - this.curKeys[k]) + ' ' + this.state.soundOption + this.noteSplitter;
                     this.curKeys[k] = 0;
                 }
             } else {
@@ -191,7 +188,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                     this.keyToNotes[k] = [];
                     if (this.recordingTime) {
                         let curTime = new Date().getTime();
-                        this.record = this.record + 'Release ' + k + ' ' + NoteMap[k].note + ' ' + ((this.roundToBeat(this.screenModel.bpm, this.curKeys[k] - this.recordingTime)) + curTime - this.curKeys[k]) + ' ' + this.state.soundOption + '~';
+                        this.record = this.record + 'Release ' + k + ' ' + NoteMap[k].note + ' ' + ((this.roundToBeat(this.screenModel.bpm, this.curKeys[k] - this.recordingTime)) + curTime - this.curKeys[k]) + ' ' + this.state.soundOption + this.noteSplitter;
                         this.curKeys[k] = 0;
                     }
                 }
@@ -303,7 +300,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
     // Plays a recording string
     // TODO: Play recording from an uploaded file
     playRecord(k: string, record: string) {
-        console.log("Key: " + k + ", Record: " + record);
+        //console.log("Key: " + k + ", Record: " + record);
         let lines = record.split('~');
         let currentTime: number = new Date().getTime();
         for (let i in lines) {
@@ -324,7 +321,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         if (lines.length >= 2) {
             let recordLength = this.roundUpToWholeBeat(this.screenModel.bpm, Number(lines[lines.length - 2].split(' ')[3]));
             let currentTime: number = new Date().getTime();
-            console.log("Play loop of length " + recordLength + " of ");
+            //console.log("Play loop of length " + recordLength + " of ");
             this.playRecord(k, record);
             this.loop[k] = setInterval(this.playRecord.bind(this, k, record), recordLength);
         }
@@ -333,7 +330,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
 
     endLoop(k: string) {
         clearInterval(this.loop[k]);
-        console.log("Clearing loop from key " + k);
+        //console.log("Clearing loop from key " + k);
         this.loop[k] = 0;
     }
 
