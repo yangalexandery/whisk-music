@@ -72,7 +72,7 @@ function makeBottomRow(): INoteUIRow {
 		notePositions: [
 			makeINoteUIPosition("Kick", "Z", "Z", 90, "#99ffcc"),
 			makeINoteUIPosition("Snare", "X", "X", 88, "#99ffcc"),
-			makeINoteUIPosition("Hi-hat", "C", "C", 67, "#99ffcc"),
+			makeINoteUIPosition("Hihat", "C", "C", 67, "#99ffcc"),
 			makeINoteUIPosition(" ", "V", "V", 86),
 			makeINoteUIPosition(" ", "B", "B", 66),
 			makeINoteUIPosition(" ", "N", "N", 78),
