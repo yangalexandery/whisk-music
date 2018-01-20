@@ -4,16 +4,18 @@ export interface INoteUIPosition {
     content: string;
     index: number;
     color: string;
+    isDummy: boolean;
 }
 
-export function makeINoteUIPosition(content: string, keyContent: string, keyboardCharacter: string, index: number, color?: string) {
+export function makeINoteUIPosition(content: string, keyContent: string, keyboardCharacter: string, index: number, color?: string, isDummy = false) {
     if (color) {
     	return {
             content: content,
             keyContent: keyContent,
             keyboardCharacter: keyboardCharacter,
     		index: index,
-    		color: color
+            color: color,
+            isDummy: isDummy
     	}
     }
     return {
@@ -21,6 +23,7 @@ export function makeINoteUIPosition(content: string, keyContent: string, keyboar
         keyContent: keyContent,
         keyboardCharacter: keyboardCharacter,
         index: index,
-        color: "white"
+        color: "white",
+        isDummy: isDummy
     };
 }

@@ -70,6 +70,7 @@ function makeMiddleRow(): INoteUIRow {
 function makeBottomRow(): INoteUIRow {
 	return {
 		notePositions: [
+			makeINoteUIPosition("\u2191", "Shift", "Shift", 15, "#ddbbff"),
 			makeINoteUIPosition("Kick", "Z", "Z", 90, "#99ffcc"),
 			makeINoteUIPosition("Snare", "X", "X", 88, "#99ffcc"),
 			makeINoteUIPosition("Hihat", "C", "C", 67, "#99ffcc"),
@@ -78,7 +79,8 @@ function makeBottomRow(): INoteUIRow {
 			makeINoteUIPosition(" ", "N", "N", 78),
 			makeINoteUIPosition("M", "M", "M", 77, "#ffff99"),
 			makeINoteUIPosition(" ", ",", ",", 44),
-			makeINoteUIPosition(" ", ".", ".", 46)
+			makeINoteUIPosition(" ", ".", ".", 46),
+			makeINoteUIPosition("", "", "", -1, "white", true)
 		]
 	}
 }

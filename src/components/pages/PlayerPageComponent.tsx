@@ -165,6 +165,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
             }
             if (k === 'shift') {
                 this.octaveUp = true;
+                this.setKeyboardRaise(true);
             }
         });
 
@@ -214,6 +215,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
             }
             if (k === 'shift') {
                 this.octaveUp = false;
+                this.setKeyboardRaise(false);
             }
         });
 
@@ -236,6 +238,13 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         });
         Soundfont.instrument(this.ac, "taiko_drum").then(this.bindMetronome.bind(this));
         this.screenModel = new ScreenModel(750, this.metronome);
+    }
+
+    private setKeyboardRaise(status: boolean) {
+        let keys = ['w', 'e', 't', 'y', 'u', 'o', 'p', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k' ,'l', ';'];
+        keys.map((key, i) => {
+            this.charToKey[key].setKeyRaise(status);
+        });
     }
 
     private bindInstrument(instr: any) {

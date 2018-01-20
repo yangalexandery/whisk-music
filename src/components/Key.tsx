@@ -10,6 +10,11 @@ export class Key extends React.Component<IKeyProps, IKeyState> {
 
     constructor(props: IKeyProps) {
         super(props);
+
+        this.state = {
+            down: null,
+            raise: false
+        };
     }
 
     render() {
@@ -19,8 +24,8 @@ export class Key extends React.Component<IKeyProps, IKeyState> {
                 Key.styles.base,
                 Key.styles.setColor(this.props.color),
                 Key.styles.space(this.props.isSpace),
-                Key.styles.downState(this.state.down)
-                // Key.styles.dummyState(this.props.isDummy)
+                Key.styles.downState(this.state.down),
+                Key.styles.dummyState(this.props.notePosition.isDummy)
             ]}>
                 <div style={[
                     OpenSansFont,
@@ -28,7 +33,7 @@ export class Key extends React.Component<IKeyProps, IKeyState> {
                     Key.styles.spaceMiddle(this.props.isSpace),
                     Key.styles.adjustFont(this.props.notePosition.content, this.props.isSpace)
                 ]}>
-                    {this.props.notePosition.content}
+                    {this.getContent()}
                 </div>
                 <div style={[
                     OpenSansFont,
@@ -38,6 +43,17 @@ export class Key extends React.Component<IKeyProps, IKeyState> {
                 </div>
             </div>
         );
+    }
+
+    setKeyRaise(status: boolean) {
+        this.setState({raise: status});
+    }
+
+    private getContent() {
+        if (this.state.raise) {
+            return this.props.notePosition.content + "\u2191";
+        }
+        return this.props.notePosition.content;
     }
 
     private static readonly WIDTH = 50;
@@ -120,18 +136,18 @@ export class Key extends React.Component<IKeyProps, IKeyState> {
                 }
             }
             return {};
-        }
-        // dummyState: (isDummy: boolean) => {
-        //     if (isDummy) {
-        //         return {
-        //             border: "none",
-        //             color: "rgb(225, 225, 225)",
-        //             backgroundColor: "rgba(225, 225, 225, 0)"
-        //         };
-        //     }
+        },
+        dummyState: (isDummy: boolean) => {
+            if (isDummy) {
+                return {
+                    border: "none",
+                    color: "rgb(225, 225, 225)",
+                    backgroundColor: "rgba(225, 225, 225, 0)"
+                };
+            }
 
-        //     return {};
-        // }
+            return {};
+        }
     };
 }
 
@@ -143,4 +159,5 @@ export interface IKeyProps {
 
 export interface IKeyState {
     down: number;
+    raise: boolean;
 }
