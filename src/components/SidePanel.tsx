@@ -52,13 +52,13 @@ export class SidePanel extends React.Component<ISidePanelProps, ISidePanelState>
                         
                         {/*<FileSelector />*/}
                         <br/>
-                        <div style={{fontSize: "16px", marginTop: "5px"}}>
+                        <div style={{fontSize: "15px", marginTop: "5px"}}>
                             {"Adjust Range"}
                         </div>
                         <br/>
                         <OctaveAdjuster parent={this.props.parent} />
                         <br/>
-                        <div style={{fontSize: "16px", marginTop: "5px"}}>
+                        <div style={{fontSize: "15px", marginTop: "5px"}}>
                             {"Adjust Metronome"}
                         </div>
                         <br/>

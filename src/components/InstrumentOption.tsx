@@ -53,7 +53,7 @@ export class InstrumentOption extends React.Component<IInstrumentOptionProps, II
             display: "flex",
             // justifyContent: "center",
             alignItems: "center",
-            fontSize: "16px",
+            fontSize: "15px",
         },
         selectedState: (selected: boolean) => {
             if (selected) {

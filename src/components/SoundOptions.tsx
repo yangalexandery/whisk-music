@@ -19,11 +19,11 @@ export class SoundOptions extends React.Component<ISoundOptionsProps, ISoundOpti
 
     render() {
     	return (
-            <div className="container" style={{fontSize: "16px"}}>
+            <div className="container">
                 {/*<b>{"Change Instrument"}</b>*/}
                 <div className="row">
                     <div className="col-sm-12">
-                        <div style={{fontSize: "16px", marginTop: "15px"}}>
+                        <div style={{fontSize: "15px", marginTop: "15px"}}>
                             {"Change Instrument"}
                         </div>
                         <br/>

@@ -55,6 +55,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
     soundOptionComponent: InstrumentOption;
     octave: number;
     octaveUp: boolean;
+    overlayMessage: string = '';
 
 
     constructor(props: IPlayerPageComponentProps) {
@@ -65,6 +66,8 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
             soundOption: 'acoustic_grand_piano',
             drawPending: false,
         };
+
+        this.overlayMessage = 'Welcome to Whisk!';
 
         // Initialization of class variables
         this.keyMapping = {};
@@ -345,6 +348,9 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                         <SidePanel parent={this} leftPanel={true} />
                     </div>
                     <div style={{ width: "80%" }}>
+                        <div style={[PlayerPageComponent.styles.textOverlay]}>
+                            {this.overlayMessage}
+                        </div>
                         <div style={[
                             PlayerPageComponent.styles.flex,
                             PlayerPageComponent.styles.visualContainer
@@ -623,6 +629,24 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
             alignItems: "center",
             color: "black",
             backgroundColor: "rgba(255, 255, 255, 0.8)"
+        },
+        textOverlay: {
+            width: "60%",
+            height: "30px",
+            position: "absolute",
+            //top: "50%",
+            left: "26.8%",
+            // marginTop: "1em",
+            marginTop: "1.5em",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            alignContent: "center",
+            color: "black",
+            fontSize: "15px",
+            fontFamily: "'Open Sans', sans-serif",
+            backgroundColor: "rgba(0, 255, 0, 0.2)",
+            borderRadius: "15px"
         }
     };
 }

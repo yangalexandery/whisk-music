@@ -38,7 +38,7 @@ export class BPMAdjuster extends React.Component<IBPMAdjusterProps, IBPMAdjuster
                     {"<"}
                 </div>
                 <div style={[
-                    {borderLeft: "1px solid black", borderRight: "1px solid black", flexGrow: "1", height: "100%", fontSize: "16px"},
+                    {borderLeft: "1px solid black", borderRight: "1px solid black", flexGrow: "1", height: "100%", fontSize: "15px"},
                     BPMAdjuster.styles.flex,
                     Unselectable
                 ]}>

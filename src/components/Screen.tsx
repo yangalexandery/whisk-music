@@ -160,6 +160,7 @@ export class Screen extends React.Component<IScreenProps, IScreenState> {
             fontWeight: "bold",
             backgroundColor: "white",
             color: "black",
+            marginTop: "2em",
             // marginLeft: "10px",
             // marginRight: "10px",
             display: "flex",
