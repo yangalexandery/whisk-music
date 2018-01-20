@@ -19,11 +19,12 @@ export class SoundOptions extends React.Component<ISoundOptionsProps, ISoundOpti
     render() {
     	return (
             <div className="container" style={{fontSize: "16px"}}>
-                {"Change Instrument"}
+                {/*<b>{"Change Instrument"}</b>*/}
                 <div className="row">
                     <div className="col-sm-12">
-
-                        {/*<h1 style={{fontSize: '1.1em'}}>Change Instrument</h1>*/}
+                        <div style={{fontSize: "16px", marginTop: "15px"}}>
+                            {"Change Instrument"}
+                        </div>
                         <br/>
                         {
                             PlayerPageComponent.pianoInstrOptions.map((pianoInstrOption, i) => {

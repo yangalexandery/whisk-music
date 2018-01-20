@@ -40,6 +40,8 @@ export class SidePanel extends React.Component<ISidePanelProps, ISidePanelState>
                     ]}>
                         <Stopwatch />
                         <br/>
+                        <DownloadButton />
+                        <br/>
                         <SoundOptions parent={this.props.parent}/>
                         {/*<br/> <br/>
                         <h1 style={{fontSize: '1.2em'}}>Play or Load Recording</h1>
@@ -47,17 +49,17 @@ export class SidePanel extends React.Component<ISidePanelProps, ISidePanelState>
                         <RecordButton /> 
                         <br/>
                         <FileSelector />*/}
-                        <DownloadButton />
+                        
                         {/*<FileSelector />*/}
                         <br/>
-                        <div style={{fontSize: "16px", marginBottom: "5px"}}>
-                            {"Adjust Keyboard Range"}
+                        <div style={{fontSize: "16px", marginTop: "5px"}}>
+                            {"Adjust Range"}
                         </div>
                         <br/>
                         <OctaveAdjuster parent={this.props.parent} />
                         <br/>
-                        <div style={{fontSize: "16px", marginBottom: "5px"}}>
-                            {"Adjust Metronome BPM"}
+                        <div style={{fontSize: "16px", marginTop: "5px"}}>
+                            {"Adjust Metronome"}
                         </div>
                         <br/>
                         <BPMAdjuster parent={this.props.parent.screenModel} />
@@ -101,9 +103,7 @@ export class SidePanel extends React.Component<ISidePanelProps, ISidePanelState>
     private DownloadButton() {
         return (
             <div>
-                <br/>
-                <br/>
-                <button onClick={() => this.props.parent.downloadRecordings()}>Download Recordings</button>
+                <button style={{alignContent: "center"}} onClick={() => this.props.parent.downloadRecordings()}>Download Recordings</button>
             </div>
         );
     }

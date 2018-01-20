@@ -42,7 +42,7 @@ export class OctaveAdjuster extends React.Component<IOctaveAdjusterProps, IOctav
                     OctaveAdjuster.styles.flex,
                     Unselectable
                 ]}>
-                    {"C" + (this.state.octave).toString() + "-" + "E" + (this.state.octave + 2).toString()}
+                    {"C" + (this.state.octave).toString() + " - " + "E" + (this.state.octave + 2).toString()}
                 </div>
                 <div style={[
                     OctaveAdjuster.styles.arrow,
