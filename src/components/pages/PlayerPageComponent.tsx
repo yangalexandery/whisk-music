@@ -55,7 +55,6 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
     soundOptionComponent: InstrumentOption;
     octave: number;
     octaveUp: boolean;
-    overlayMessage: string = '';
 
 
     constructor(props: IPlayerPageComponentProps) {
@@ -65,9 +64,10 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         this.state = {
             soundOption: 'acoustic_grand_piano',
             drawPending: false,
+            overlayMessage: ''
         };
 
-        this.overlayMessage = 'Welcome to Whisk!';
+        this.state.overlayMessage = 'Welcome to Whisk!';
 
         // Initialization of class variables
         this.keyMapping = {};
@@ -106,6 +106,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
         // Keyboard listener to play sounds
         // TODO: REFACTOR THIS PART
         this.noteKeyboardManager.on(NoteKeyboardManager.KEY_START, (k: string) => {
+            // this.setState({overlayMessage : "You pressed key " + k});
             if (k in NoteMap) {
                 this.screenModel.addPlayerTick();
                 // this.instr.play(NoteMap[k]);
@@ -144,14 +145,17 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                 this.downKey(' ');
                 this.metronome.mute = true;
                 this.metronome.mute = false;
+                this.setState({overlayMessage: "Recording from channel " + k + "."});
             }
 
             if (k in this.playMapping) {
                 if (this.loop[k]) {
                     this.endLoop(k);
+                    this.setState({overlayMessage: "Stopped playing from channel " + String.fromCharCode(k.charCodeAt(0) - 1) + "."});
                 } else{
                     var toPlay = this.recordings[String.fromCharCode(k.charCodeAt(0) - 1)];
                     this.playLoop(k, toPlay);
+                    this.setState({overlayMessage: "Playing from channel " + String.fromCharCode(k.charCodeAt(0) - 1) + '. Press same key to stop playing.'});
                 }
             }
 
@@ -199,7 +203,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
             if (k === ' ') {
                 if (!(this.recordingKey === '')) {
                     this.recordings[this.recordingKey] = this.record;
-                    
+                    this.setState({overlayMessage: "Stopped channel " + this.recordingKey + ". Press " + String.fromCharCode(this.recordingKey.charCodeAt(0) + 1) + " to play recording."});
                     // this.downloadRecording(this.recordingKey, this.record);
                     this.record = '';
                     this.recordingKey = '';
@@ -349,7 +353,7 @@ export class PlayerPageComponent extends React.Component<IPlayerPageComponentPro
                     </div>
                     <div style={{ width: "80%" }}>
                         <div style={[PlayerPageComponent.styles.textOverlay]}>
-                            {this.overlayMessage}
+                            {this.state.overlayMessage}
                         </div>
                         <div style={[
                             PlayerPageComponent.styles.flex,
@@ -660,4 +664,5 @@ export interface IPlayerPageComponentProps {
 export interface IPlayerPageComponentState {
     soundOption: string;
     drawPending: boolean;
+    overlayMessage: string;
 }
